@@ -11,7 +11,7 @@ For mac: [Mac OS X](https://sbp.enterprisedb.com/getfile.jsp?fileid=1259195)
 You would need to make a user and a database under that user.
 Go to pgadmin4 and make another user.
 
-1. Servers -> Login/Group Roles
+1. Servers -> Postgresql 17 -> Login/Group Roles
 2. Right click, and create a new user. 
 
 
