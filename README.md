@@ -50,7 +50,18 @@ Please use cmd shell
     cd mySchedules
     ```
 
-6. Deploy locally
+6. Build models and then deploy locally
+     ```sh
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+    For deploying
     ```sh
     python manage.py runserver
     ```
+
+## URL Routes
+- user/register
+- user/login
+- user/logout
+- user/home
