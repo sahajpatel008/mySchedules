@@ -1,0 +1,13 @@
+body{
+    height: 100vh;
+}
+.cursor{
+    cursor: pointer;
+}
+.justifyContent{
+    display: flex;
+    justify-content: center;
+}
+td{
+    padding:0;
+}
