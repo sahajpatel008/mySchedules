@@ -51,6 +51,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = "mySchedules.urls"
@@ -144,3 +146,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('HOST_EMAIL')  # Your email address
 EMAIL_HOST_PASSWORD = os.getenv('MAIL_PASSWORD')  # Your email password or app-specific password
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',  # Angular dev server
+]
