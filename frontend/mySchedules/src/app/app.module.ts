@@ -20,13 +20,15 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {NgFor} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginPageComponent,
     SchedulesPageComponent,
-    ShiftsActionBoxComponent
+    ShiftsActionBoxComponent,
+    SignUpPageComponent
   ],
   imports: [
     BrowserModule,
