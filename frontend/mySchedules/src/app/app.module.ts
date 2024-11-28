@@ -14,7 +14,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ShiftsActionBoxComponent } from './components/schedules-page/shifts-action-box/shifts-action-box.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import {MatTabsModule} from '@angular/material/tabs';
+import {NgFor} from '@angular/common';
+import {MatSelectModule} from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,10 +37,13 @@ import {MatIconModule} from '@angular/material/icon';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     RouterModule,
-     MatDatepickerModule, MatNativeDateModule,
-     FormsModule, 
-     MatDialogModule,
-     MatIconModule
+    MatDatepickerModule, MatNativeDateModule,
+    FormsModule, 
+    MatDialogModule,
+    MatIconModule,
+    MatExpansionModule,
+    MatTabsModule,
+    MatSelectModule, NgFor,HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

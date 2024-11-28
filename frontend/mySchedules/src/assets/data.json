@@ -1,5 +1,5 @@
 {
-    "data" : [
+    "users" : [
         {
             "id": 1,
             "name": "Rishita"
@@ -15,6 +15,20 @@
         {
             "id": 4,
             "name": "Manav"
+        }
+    ],
+    "location": [
+        {
+            "id": 1,
+            "loc": "Mission"
+        },
+        {
+            "id": 2,
+            "loc": "Fresh Bytes"
+        },
+        {
+            "id": 3,
+            "loc": "Cellar Market"
         }
     ]
 }

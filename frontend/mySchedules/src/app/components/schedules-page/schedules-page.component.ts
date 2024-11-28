@@ -11,6 +11,9 @@ import {MatDialog} from '@angular/material/dialog';
 export class SchedulesPageComponent implements OnInit{
   range: FormGroup;
   users: any;
+  locations:any;
+  
+  panelOpenState = false;
   
   constructor(public dialog: MatDialog) {
     // Initialize the range form group with null values
@@ -46,7 +49,8 @@ export class SchedulesPageComponent implements OnInit{
       return response.json();
     })
     .then(data => {
-      this.users = data.data;
+      this.users = data.users;
+      this.locations = data.location;
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -70,7 +74,11 @@ export class SchedulesPageComponent implements OnInit{
   }
 
   addShift(user: any){
-    const dialogRef = this.dialog.open(ShiftsActionBoxComponent);
+    const dialogRef = this.dialog.open(ShiftsActionBoxComponent,{
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw'
+    });
    
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
