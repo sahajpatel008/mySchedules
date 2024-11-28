@@ -85,7 +85,7 @@ def register(request):
 @csrf_exempt
 def login_view(request):
     if request.method == "POST":
-        try:   
+        try:    
             print("HELLO")
             data = json.loads(request.body)
             print(data)

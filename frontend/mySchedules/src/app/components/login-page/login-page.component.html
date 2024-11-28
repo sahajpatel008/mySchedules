@@ -1,4 +1,4 @@
-<div id="loginPageDiv">
+<!-- <div id="loginPageDiv">
     <div style="border: 5px solid aliceblue;
     border-radius: 3%;
     padding: 3%;">
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="justifyContent">
-                <button mat-button cursor class="loginBtn" [routerLink]="['/schedulesPage']">Login</button>
+                <button mat-button cursor class="loginBtn" (click)="onLogin()" [routerLink]="['/schedulesPage']">Login</button>
             </div>
     
             <div class="loginSectionFooter" style="display: flex;flex-direction:column;align-items: center;">
@@ -32,4 +32,14 @@
                 <p style="margin:0">Don't have an account? <span class="cursor"><a [routerLink]="['/signUpPage']">Sign up</a></span></p>
             </div>
     </div>
-</div>
+</div> -->
+
+<form [formGroup]="registerForm" (ngSubmit)="onLogin()">
+    <label for="username">Username:</label>
+    <input id="username" formControlName="username" type="text" required />
+
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password" required />
+  
+    <button type="submit" [disabled]="registerForm.invalid">Login</button>
+</form>
