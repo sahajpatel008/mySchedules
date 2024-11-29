@@ -11,10 +11,12 @@ from users.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 
+import random
 
 # Create your views here.
 @csrf_exempt
 def register(request):
+    print("Zinda hu mai")
     if request.method == 'POST':
         try:
             # Load data from request body
@@ -36,7 +38,10 @@ def register(request):
                 return JsonResponse({'error': 'Email is already in use.'}, status=400)
 
             # Create the user
-            user = User(username=username, email=email)
+            user = User(
+                username=username, 
+                email=email,
+                role='employee')
             user.set_password(password)
             user.save()
 
@@ -97,7 +102,22 @@ def login_view(request):
                 return JsonResponse({"error": "Username and password are required."}, status=400)
 
             user = authenticate(username=username, password=password)
+        
             if user:
+                paramsDict = {
+                    "userID": user.username,
+                    "number": 0
+                }
+                login(request, user)
+                paramsDict['message'] = "Login successfull"
+                
+
+                if user.role == 'manager':
+                    number = random.randint(1, 1000000)
+                    paramsDict['number'] = number
+                    return JsonResponse(paramsDict, status=200)
+                    
+                return JsonResponse(paramsDict, status=200)
                 return JsonResponse({"message": "Login successful."}, status=200)
             else:
                 return JsonResponse({"error": "Invalid credentials."}, status=401)
