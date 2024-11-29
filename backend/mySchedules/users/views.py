@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, LoginForm
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
-from users.models import User
+from users.models import User, UniqueShift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -147,6 +148,52 @@ def logout_view(request):
         logout(request)
         return JsonResponse({"message": "Logged out successfully."}, status=200)
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
+@csrf_exempt
+def makeShift_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print(data)
+            date = data.get("date")
+            location = data.get("location")
+            start_time = data.get("start_time")
+            end_time = data.get("end_time")
+
+            print("Date:", date)
+            print("start_time:", start_time)
+            print("end_time:", end_time)
+            print("location:", location)
+
+            if not all([date, location, start_time, end_time]):
+                return JsonResponse({"Error": "date, location, start_time, end_time required"}, status=400)
+            
+            try:
+                date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                print("date ban gai?")
+                start_time = datetime.datetime.strptime(start_time, "%I:%M %p").time()
+                end_time =datetime.datetime.strptime(end_time, "%I:%M %p").time()
+                print("time ban gaya?")
+            except ValueError:
+                return JsonResponse({"error": "Invalid date or time format."}, status=400)
+            
+            # Ensure the shift start time is before the end time
+            if start_time >= end_time:
+                return JsonResponse({"error": "Start time must be before end time."}, status=400)
+            
+            # Create the shift
+            shift = UniqueShift.objects.create(
+                date=date,
+                location=location,
+                start_time=start_time,
+                end_time=end_time,
+            )
+            return JsonResponse({"message": "shift created successfully", "shift_id": shift.shift_id}, status=201)
+
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+
 
 @login_required
 def home(request):
