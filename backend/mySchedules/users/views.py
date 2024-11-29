@@ -170,7 +170,7 @@ def makeShift_view(request):
             
             try:
                 date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-                print("date ban gai?")
+                print("date ban gai? Iski ban gai, teri nahi bani     (＞︿＜)")
                 start_time = datetime.datetime.strptime(start_time, "%I:%M %p").time()
                 end_time =datetime.datetime.strptime(end_time, "%I:%M %p").time()
                 print("time ban gaya?")
@@ -193,6 +193,35 @@ def makeShift_view(request):
         except Exception as e:
             print("Exception:", e)
             return JsonResponse({"error": str(e)}, status=400)
+        
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
+
+def getShifts_view(request):
+    if request.method == "GET":
+        try:
+            # Retrieve all shifts from the database
+            shifts = UniqueShift.objects.all()
+            
+            # Convert queryset to a list of dictionaries
+            shifts_data = [
+                {
+                    "shift_id": shift.shift_id,
+                    "employee": shift.user.username if shift.employee else None,
+                    "manager": shift.user.username if shift.manager else None,
+                    "date": shift.date.strftime("%Y-%m-%d"),
+                    "location": shift.location,
+                    "start_time": shift.start_time.strftime("%H:%M:%S"),
+                    "end_time": shift.end_time.strftime("%H:%M:%S"),
+                }
+                for shift in shifts
+            ]
+            
+            return JsonResponse({"shifts": shifts_data}, status=200)
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
 
 @login_required
