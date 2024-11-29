@@ -46,6 +46,11 @@ export class ShiftsActionBoxComponent {
             // this.getData();
   }
 
+  onDateChange(event: any): void {
+    this.date = event.value; // This is the selected date
+    console.log('Selected Date:', this.date);
+  }
+
   getData(): void {
     const apiUrl = '';
     this.http.get(apiUrl).subscribe(
@@ -85,7 +90,7 @@ export class ShiftsActionBoxComponent {
     const headers = { 'Content-Type': 'application/json' };
     // const body = JSON.stringify(location,date,startTime,endTime);
     const body ={
-      "location": location,
+      "location": this.selectedLocation,
       "date": this.date,
       "start_time": this.start_time,
       "end_time": this.end_time
