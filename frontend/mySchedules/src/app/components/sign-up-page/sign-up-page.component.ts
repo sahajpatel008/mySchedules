@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import {FormControl, Validators, FormsModule, ReactiveFormsModule, FormBuilder, FormGroup} from '@angular/forms';
+import {FormControl, Validators, FormBuilder, FormGroup, AbstractControl, ValidationErrors} from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -19,9 +19,11 @@ export class SignUpPageComponent {
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-    });
+      confirmPassword: ['', Validators.required],
+    },
+    { validators: this.passwordMatchValidator });
   }
-
+  
   getErrorMessage() {
     if (this.email.hasError('required')) {
       return 'You must enter a value';
@@ -30,17 +32,31 @@ export class SignUpPageComponent {
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
   hide = true;
-  onRegister() : void | any{
-    if (this.registerForm.valid) {
-      console.log(1);
-      console.log(this.registerForm);
-      const apiUrl = ' http://127.0.0.1:8000/users/register/';
-    
-      return this.http.post(apiUrl, this.registerForm.value)
-    }
 
-    
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    if (password && confirmPassword && password !== confirmPassword) {
+      control.get('confirmPassword')?.setErrors({ mismatch: true }); // Set mismatch error
+      return { mismatch: true };
+    } else {
+      control.get('confirmPassword')?.setErrors(null); // Clear errors if they match
+      return null;
+    }
   }
 
-  
+  onRegister() : void | any{
+    if (this.registerForm.valid) {
+      const apiUrl = 'http://127.0.0.1:8000/users/register/';
+
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify(this.registerForm.value);
+
+      this.http.post(apiUrl, body, { headers }).subscribe(
+        response => console.log(response),
+        error => console.error(error)
+      );
+    }    
+  }
 }

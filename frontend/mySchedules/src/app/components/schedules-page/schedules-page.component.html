@@ -17,124 +17,50 @@
   </div>
 </div>
 
-<mat-tab-group>
-  <mat-tab label="My Shifts"> 
+<div class="displayDates">
+  <div style="display: flex;">
+    <ul class="dates" style="display:flex;flex-direction: column;">
+      <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+    </ul>
+    <ul class="usersData" style="display:flex;flex-direction: column;">
+      <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass" (click)="addShift(user)"></li>
+    </ul>
+  </div>
+</div>
 
-    <div class="displayDates">
+<div style="margin:2%">
+  <mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                     (closed)="panelOpenState = false" *ngFor="let location of locations" style="padding: 1%;">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{location.loc}}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  
+  <div class="displayDates">
+    <ul class="dates">
+      <li class="dateClass"></li>
+      <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+    </ul>
+    
+    <div style="display:flex">
       <div>
-        <ul class="dates">
-          <!-- <li class="dateClass"></li> -->
-          <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+        <ul class="users">
+          <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
         </ul>
       </div>
-      
-      <div style="display:flex">
-        <!-- <div>
-          <ul class="users">
-            <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-          </ul>
-        </div> -->
-        <div>
-          <ul *ngFor="let user of users" class="usersData" style="display:flex">
-            <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-          </ul>
-        </div>
+      <div>
+        <ul *ngFor="let user of users" class="usersData" style="display:flex">
+          <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
+        </ul>
       </div>
     </div>
-
-    <div style="margin:2%">
-      <mat-accordion>
-        <mat-expansion-panel (opened)="panelOpenState = true"
-               (closed)="panelOpenState = false" 
-                *ngFor="let location of locations" style="padding: 1%;">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{location.loc}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      
-      <div class="displayDates">
-        <ul class="dates">
-          <li class="dateClass"></li>
-          <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-        </ul>
-        
-        <div style="display:flex">
-          <div>
-            <ul class="users">
-              <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-            </ul>
-          </div>
-          <div>
-            <ul *ngFor="let user of users" class="usersData" style="display:flex">
-              <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-  
-    </mat-expansion-panel>
-  </mat-accordion>
   </div>
-  </mat-tab>
-  <mat-tab label="Available Shifts">
-    <div class="displayDates">
-      <div>
-        <ul class="dates">
-          <!-- <li class="dateClass"></li> -->
-          <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-        </ul>
-      </div>
-      
-      <div style="display:flex">
-        <!-- <div>
-          <ul class="users">
-            <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-          </ul>
-        </div> -->
-        <div>
-          <ul *ngFor="let user of users" class="usersData" style="display:flex">
-            <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
-    <div style="margin:2%">
-      <mat-accordion>
-        <mat-expansion-panel (opened)="panelOpenState = true"
-                         (closed)="panelOpenState = false" *ngFor="let location of locations" style="padding: 1%;">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{location.loc}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      
-      <div class="displayDates">
-        <ul class="dates">
-          <li class="dateClass"></li>
-          <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-        </ul>
-        
-        <div style="display:flex">
-          <div>
-            <ul class="users">
-              <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-            </ul>
-          </div>
-          <div>
-            <ul *ngFor="let user of users" class="usersData" style="display:flex">
-              <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-  
-    </mat-expansion-panel>
-  </mat-accordion>
-  </div>
-  </mat-tab>
-</mat-tab-group>
+</mat-expansion-panel>
+</mat-accordion>
+</div>
 
 
 

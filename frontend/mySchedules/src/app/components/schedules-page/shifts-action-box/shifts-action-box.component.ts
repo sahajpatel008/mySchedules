@@ -13,11 +13,17 @@ export class ShiftsActionBoxComponent {
   users: any;
   locations: any;
   data: any;
+  date: any;
+  times: string[] = [];
+  start_time: string = '';
+  end_time: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<ShiftsActionBoxComponent>,
     private http: HttpClient
-  ) {}
+  ) {
+    this.generateTimeOptions();
+  }
 
   ngOnInit(): void{
             //fetching data from json
@@ -53,8 +59,42 @@ export class ShiftsActionBoxComponent {
     );
   }
 
+  generateTimeOptions(): void {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // start time at midnight
+    const end = new Date();
+    end.setHours(23, 59, 59, 0); // end time at the end of the day
+
+    const timeOptions: string[] = [];
+    for (let time = start; time <= end; time.setMinutes(time.getMinutes() + 30)) {
+      const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      timeOptions.push(formattedTime);
+    }
+
+    this.times = timeOptions;
+  }
+
   closeDialog() {
     this.dialogRef.close('closed!');
+  }
+
+  createShift(){
+    // this.closeDialog();
+    const apiUrl = ' http://127.0.0.1:8000/users/makeShift/';
+    
+    const headers = { 'Content-Type': 'application/json' };
+    // const body = JSON.stringify(location,date,startTime,endTime);
+    const body ={
+      "location": location,
+      "date": this.date,
+      "start_time": this.start_time,
+      "end_time": this.end_time
+    }
+
+    this.http.post(apiUrl, body, { headers }).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+    );
   }
 
 }

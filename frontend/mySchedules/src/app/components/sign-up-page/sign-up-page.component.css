@@ -1,0 +1,15 @@
+#signUpPageDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  #signUpPageDiv .signUpBtn{
+    background: aliceblue;
+    border-radius: 10%;
+  }
+  .registerFromFields{
+    padding: 2%;
+  }

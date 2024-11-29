@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -10,11 +11,14 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 export class LoginPageComponent {
 
   email = new FormControl('', [Validators.required, Validators.email]);
-
   registerForm: FormGroup;
   data: any;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder, 
+    private http: HttpClient, 
+    private router: Router) 
+  {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -29,23 +33,19 @@ export class LoginPageComponent {
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
   hide = true;
-  onLogin() : void | any{
+  
+  onLogin(){
+    this.router.navigate(['/schedulesPage']);
     if (this.registerForm.valid) {
-      console.log(1);
-      console.log(this.registerForm);
       const apiUrl = ' http://127.0.0.1:8000/users/login/';
     
-       this.http.post(apiUrl, this.registerForm.value).subscribe(
-        (response) => {
-          this.data = response; // Handle the response here
-          console.log(this.data);
-        },
-        (error) => {
-          console.error('API call failed:', error); // Handle errors
-        });
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify(this.registerForm.value);
+
+      this.http.post(apiUrl, body, { headers }).subscribe(
+        response => console.log(response),
+        error => console.error(error)
+      );
     }
-
-    
   }
-
 }

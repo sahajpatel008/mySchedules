@@ -1,12 +1,63 @@
-<form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-  <label for="username">Name:</label>
-  <input id="username" formControlName="username" type="text" required />
+<div id="signUpPageDiv">
+  <div style="border: 5px solid aliceblue;
+  border-radius: 3%;
+  padding: 3%;">
+      <h1 style="text-align: center;">Sign Up</h1>
+      <div class="signUpDetails">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+          <!-- Username Field -->
+           <div class="example-container">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Username</mat-label>
+              <input matInput id="username" formControlName="username" type="text" required />
+              <mat-error *ngIf="registerForm.get('username')?.invalid">Username is required</mat-error>
+            </mat-form-field>
+           </div>
+        
+          <!-- Email Field -->
+           <div class="example-container">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput id="email" formControlName="email" type="email" required />
+              <mat-error *ngIf="registerForm.get('email')?.invalid">Valid email is required</mat-error>
+            </mat-form-field>
+           </div>
+        
+          <!-- Password Field -->
+           <div class="example-container">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Password</mat-label>
+              <input matInput id="password" formControlName="password" type="password" required />
+              <mat-error *ngIf="registerForm.get('password')?.invalid">Password is required</mat-error>
+            </mat-form-field>
+           </div>
+           
+          <!-- Confirm Password Field -->
+          <div class="example-container">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Confirm Password</mat-label>
+              <input
+                matInput
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                type="password"
+                required
+              />
+              <mat-error *ngIf="registerForm.get('confirmPassword')?.errors?.['mismatch']">
+                Passwords do not match
+              </mat-error>
+              
+            </mat-form-field>
+           </div>
 
-  <label for="email">Email:</label>
-  <input id="email" formControlName="email" type="email" required />
-
-  <label for="password">Password:</label>
-  <input id="password" formControlName="password" type="password" required />
-
-  <button type="submit" [disabled]="registerForm.invalid">Register</button>
-</form>
+          <!-- Submit Button -->
+          <div class="registerFromFields justifyContent">
+            <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">
+              Register
+            </button>
+          </div>
+        </form>
+        
+      </div>
+  </div>
+</div>

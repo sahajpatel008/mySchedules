@@ -1,14 +1,15 @@
-<!-- <div id="loginPageDiv">
+<div id="loginPageDiv">
     <div style="border: 5px solid aliceblue;
     border-radius: 3%;
     padding: 3%;">
         <h1 style="text-align: center;">Login</h1>
         <div class="loginDetails">
+            <form [formGroup]="registerForm" (ngSubmit)="onLogin()">
             <div class="emailField">
                 <div class="example-container">
                     <mat-form-field>
-                      <mat-label>Enter your email</mat-label>
-                      <input matInput placeholder="pat@example.com" [formControl]="email" required>
+                      <mat-label for="username">Username</mat-label>
+                      <input matInput id="username" formControlName="username" type="text" required>
                       <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </div>
@@ -16,25 +17,26 @@
             <div class="passwordField">
                 <div class="example-container">
                     <mat-form-field>
-                      <mat-label>Enter your password</mat-label>
-                      <input matInput [type]="hide ? 'password' : 'text'">
+                      <mat-label for="password">Enter your password</mat-label>
+                      <input matInput [type]="hide ? 'password' : 'text'" id="password" formControlName="password" type="password" required>
                       <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                       </button>
                     </mat-form-field>
                 </div>
             </div>
             <div class="justifyContent">
-                <button mat-button cursor class="loginBtn" (click)="onLogin()" [routerLink]="['/schedulesPage']">Login</button>
+                <button mat-button cursor class="loginBtn" [disabled]="registerForm.invalid">Login</button>
             </div>
     
             <div class="loginSectionFooter" style="display: flex;flex-direction:column;align-items: center;">
-                <p style="margin:0">Forgot <span class="cursor"><a href="">Password</a></span>?</p>
+                <!-- <p style="margin:0">Forgot <span class="cursor"><a href="">Password</a></span>?</p> -->
                 <p style="margin:0">Don't have an account? <span class="cursor"><a [routerLink]="['/signUpPage']">Sign up</a></span></p>
             </div>
+        </form>
     </div>
-</div> -->
+</div>
 
-<form [formGroup]="registerForm" (ngSubmit)="onLogin()">
+<!-- <form [formGroup]="registerForm" (ngSubmit)="onLogin()">
     <label for="username">Username:</label>
     <input id="username" formControlName="username" type="text" required />
 
@@ -42,4 +44,4 @@
     <input id="password" formControlName="password" type="password" required />
   
     <button type="submit" [disabled]="registerForm.invalid">Login</button>
-</form>
+</form> -->

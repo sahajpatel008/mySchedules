@@ -21,6 +21,7 @@ import {NgFor} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
+import { UsersDashboardComponent } from './components/users-dashboard/users-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.comp
     LoginPageComponent,
     SchedulesPageComponent,
     ShiftsActionBoxComponent,
-    SignUpPageComponent
+    SignUpPageComponent,
+    UsersDashboardComponent
   ],
   imports: [
     BrowserModule,
