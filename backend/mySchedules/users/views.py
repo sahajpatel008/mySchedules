@@ -200,10 +200,22 @@ def makeShift_view(request):
 def getShifts_view(request):
     if request.method == "GET":
         try:
-            # Retrieve all shifts from the database
-            shifts = UniqueShift.objects.all()
+            # Retrieve the start_date and end_date from the query parameters
+            start_date_str = request.GET.get('start_date')  # e.g., "2024-11-01"
+            end_date_str = request.GET.get('end_date')      # e.g., "2024-11-30"
             
-            # Convert queryset to a list of dictionaries
+            # Validate if both start_date and end_date are provided
+            if not start_date_str or not end_date_str:
+                return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
+
+            # Convert the date strings into date objects
+            start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+            # Filter shifts within the date range and order them by date in ascending order
+            shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
+
+            # Prepare the data for response
             shifts_data = [
                 {
                     "shift_id": shift.shift_id,
@@ -216,11 +228,16 @@ def getShifts_view(request):
                 }
                 for shift in shifts
             ]
-            
+
+            # Return the shifts data as JSON response
             return JsonResponse({"shifts": shifts_data}, status=200)
+        
+        except ValueError as e:
+            return JsonResponse({"error": f"Invalid date format: {str(e)}"}, status=400)
+        
         except Exception as e:
-            print("Exception:", e)
             return JsonResponse({"error": str(e)}, status=400)
+    
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
 
