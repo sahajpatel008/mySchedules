@@ -196,21 +196,30 @@ def makeShift_view(request):
         
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
-
+@csrf_exempt
 def getShifts_view(request):
     if request.method == "GET":
         try:
             # Retrieve the start_date and end_date from the query parameters
+            print(request.GET)
             start_date_str = request.GET.get('start_date')  # e.g., "2024-11-01"
             end_date_str = request.GET.get('end_date')      # e.g., "2024-11-30"
+            
             
             # Validate if both start_date and end_date are provided
             if not start_date_str or not end_date_str:
                 return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
 
             # Convert the date strings into date objects
-            start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+            start_timestamp_s = int(start_date_str) / 1000
+            end_timestamp_s = int(end_date_str) / 1000
+            # start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            # end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+            print(start_timestamp_s, end_timestamp_s)
+            start_date = datetime.datetime.fromtimestamp(start_timestamp_s).date()
+            end_date = datetime.datetime.fromtimestamp(end_timestamp_s).date()
 
             # Filter shifts within the date range and order them by date in ascending order
             shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
@@ -233,9 +242,11 @@ def getShifts_view(request):
             return JsonResponse({"shifts": shifts_data}, status=200)
         
         except ValueError as e:
+            print("The exception:", e)
             return JsonResponse({"error": f"Invalid date format: {str(e)}"}, status=400)
         
         except Exception as e:
+            print("The exception:", e)
             return JsonResponse({"error": str(e)}, status=400)
     
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)

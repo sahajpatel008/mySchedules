@@ -98,12 +98,13 @@ export class SchedulesPageComponent implements OnInit{
     const apiUrl = ' http://127.0.0.1:8000/users/getShifts/';
     const headers = { 'Content-Type': 'application/json' };
 
-    this.params ={
-      startDate: this.range.value.start,
-      endDate: this.range.value.end
+    this.params = {
+      start_date: this.range.value.start?.getTime(),  // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime() 
     }
 
-    this.http.post(apiUrl, this.params, { headers }).subscribe(
+    console.log(this.params)
+    this.http.get(apiUrl, {params: this.params, headers}).subscribe(
       response => console.log(response),
       error => console.error(error)
     );
