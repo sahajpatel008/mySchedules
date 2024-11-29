@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ShiftsActionBoxComponent } from './shifts-action-box/shifts-action-box.component';
 import {MatDialog} from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-schedules-page',
@@ -12,10 +13,13 @@ export class SchedulesPageComponent implements OnInit{
   range: FormGroup;
   users: any;
   locations:any;
-  
+  shiftDetails: any;
   panelOpenState = false;
-  
-  constructor(public dialog: MatDialog) {
+  params: any;
+  startDate: any;
+  endDate: any;
+
+  constructor(public dialog: MatDialog,private http: HttpClient) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
       start: new FormControl<Date | null>(null),
@@ -55,20 +59,25 @@ export class SchedulesPageComponent implements OnInit{
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
+
+    this.getShift();
+    this.range.valueChanges.subscribe(() => {
+      this.getShift();
+    });
   }
 
   getDatesInRange(): Date[] {
-    const startDate = this.range.value.start;
-    const endDate = this.range.value.end;
+   this.startDate = this.range.value.start;
+    this.endDate = this.range.value.end;
     const dates: Date[] = [];
 
-    if (startDate && endDate) {
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
+    if (this.startDate && this.endDate) {
+      let currentDate = new Date(this.startDate);
+      while (currentDate <= this.endDate) {
         dates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }
-    }
+    }    
 
     return dates;
   }
@@ -81,7 +90,22 @@ export class SchedulesPageComponent implements OnInit{
     });
    
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      this.shiftDetails = result;
+      console.log('Dialog result:', result);
     });
+  }
+  getShift(){
+    const apiUrl = ' http://127.0.0.1:8000/users/getShifts/';
+    const headers = { 'Content-Type': 'application/json' };
+
+    this.params ={
+      startDate: this.range.value.start,
+      endDate: this.range.value.end
+    }
+
+    this.http.post(apiUrl, this.params, { headers }).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+    );
   }
 }

@@ -17,6 +17,7 @@ export class ShiftsActionBoxComponent {
   times: string[] = [];
   start_time: string = '';
   end_time: string = '';
+  params: any;
 
   constructor(
     public dialogRef: MatDialogRef<ShiftsActionBoxComponent>,
@@ -79,27 +80,25 @@ export class ShiftsActionBoxComponent {
     this.times = timeOptions;
   }
 
-  closeDialog() {
-    this.dialogRef.close('closed!');
-  }
-
   createShift(){
-    // this.closeDialog();
     const apiUrl = ' http://127.0.0.1:8000/users/makeShift/';
-    
     const headers = { 'Content-Type': 'application/json' };
-    // const body = JSON.stringify(location,date,startTime,endTime);
-    const body ={
-      "location": this.selectedLocation,
-      "date": this.date,
-      "start_time": this.start_time,
-      "end_time": this.end_time
+
+    this.params ={
+      location: this.selectedLocation,
+      date: this.date,
+      start_time: this.start_time,
+      end_time: this.end_time
     }
 
-    this.http.post(apiUrl, body, { headers }).subscribe(
+    this.http.post(apiUrl, this.params, { headers }).subscribe(
       response => console.log(response),
       error => console.error(error)
     );
+  }
+
+  closeDialog() {
+    this.dialogRef.close(this.params);
   }
 
 }

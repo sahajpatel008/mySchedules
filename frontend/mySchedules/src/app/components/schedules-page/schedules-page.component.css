@@ -58,3 +58,9 @@
         height: 40vh;
         width: 40vh;
 }
+.shiftsContainer{
+    background: aliceblue;
+    padding: 2% 5%;
+    border-left: 2px solid #91c8f8;
+    margin: 1%;
+}

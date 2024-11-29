@@ -23,7 +23,12 @@
       <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
     </ul>
     <ul class="usersData" style="display:flex;flex-direction: column;">
-      <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass" (click)="addShift(user)"></li>
+      <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass" (click)="addShift(user)">
+        <span *ngIf="shiftDetails" class="shiftsContainer">
+          {{shiftDetails.location}} <br/>
+          {{shiftDetails.start_time}} - {{shiftDetails.end_time}}
+        </span>  
+      </li>
     </ul>
   </div>
 </div>
