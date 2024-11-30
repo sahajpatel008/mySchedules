@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
-from users.models import User, UniqueShift
+from users.models import User, UniqueShift, Shift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -251,6 +251,42 @@ def getShifts_view(request):
     
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
+@csrf_exempt
+def pickupShift_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        employee_username = data.get("username")
+        shift_id = int(data.get("shift_id"))
+
+        try:
+            # Get the related objects
+            try:
+                shift_obj = UniqueShift.objects.get(pk=shift_id)
+            except UniqueShift.DoesNotExist:
+                return JsonResponse({"error": "Shift not found."}, status=404)
+
+            try:
+                employee_obj = User.objects.get(pk=employee_username)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Employee not found."}, status=404)
+            
+            shift_obj = Shift.objects.create(
+                shift_id = shift_obj,
+                employee = employee_obj,
+                status = "Pending"
+            )
+
+
+            return JsonResponse({"message": "shift pickeup request sent", "pickup_id": shift_obj.pk}, status=201)
+
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+        
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+        
+        
 
 @login_required
 def home(request):
