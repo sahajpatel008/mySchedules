@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ShiftsActionBoxComponent } from './shifts-action-box/shifts-action-box.component';
+import { ViewShiftsActionBoxComponent } from './view-shifts-action-box/view-shifts-action-box.component';
 import {MatDialog} from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 
@@ -14,6 +15,7 @@ export class SchedulesPageComponent implements OnInit{
   users: any;
   locations:any;
   shiftDetails: any;
+  shifts: any[] = [];
   panelOpenState = false;
   params: any;
   startDate: any;
@@ -94,19 +96,36 @@ export class SchedulesPageComponent implements OnInit{
       console.log('Dialog result:', result);
     });
   }
-  getShift(){
-    const apiUrl = ' http://127.0.0.1:8000/users/getShifts/';
+
+  viewShift(shiftId: number) {
+    const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw',
+      data: { shiftId }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed', result);
+    });
+  }
+
+  getShift() {
+    const apiUrl = 'http://127.0.0.1:8000/users/getShifts/';
     const headers = { 'Content-Type': 'application/json' };
 
     this.params = {
-      start_date: this.range.value.start?.getTime(),  // Convert start date to timestamp
-      end_date: this.range.value.end?.getTime() 
-    }
+      start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime(),
+    };
 
-    console.log(this.params)
-    this.http.get(apiUrl, {params: this.params, headers}).subscribe(
-      response => console.log(response),
+    console.log(this.params);
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        this.shifts = response.shifts; // Assuming the backend returns a list of shifts
+      },
       error => console.error(error)
     );
   }
+  
 }
