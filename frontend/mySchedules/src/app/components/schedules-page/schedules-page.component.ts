@@ -15,6 +15,7 @@ export class SchedulesPageComponent implements OnInit{
   users: any;
   locations:any;
   shiftDetails: any;
+  shiftId: number | undefined;
   shifts: any[] = [];
   panelOpenState = false;
   params: any;
@@ -45,6 +46,10 @@ export class SchedulesPageComponent implements OnInit{
       start: startOfWeek,
       end: endOfWeek,
     });
+
+    if (this.shiftId) {
+      this.getEmployeesByShiftId(this.shiftId);
+    }
 
     //fetching data from json
     fetch('./assets/data.json')
@@ -97,18 +102,18 @@ export class SchedulesPageComponent implements OnInit{
     });
   }
 
-  viewShift(shiftId: number) {
-    const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
-      panelClass: 'custom-modalbox', 
-      height: '60vh',
-      width: '60vw',
-      data: { shiftId }
-    });
+  // viewShift(shiftId: number) {
+  //   const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
+  //     panelClass: 'custom-modalbox', 
+  //     height: '60vh',
+  //     width: '60vw',
+  //     data: { shiftId }
+  //   });
   
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog closed', result);
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     console.log('Dialog closed', result);
+  //   });
+  // }
 
   getShift() {
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts/';
@@ -128,4 +133,29 @@ export class SchedulesPageComponent implements OnInit{
     );
   }
   
+  getEmployeesByShiftId(shiftId: number): void {
+    const apiUrl = `http://127.0.0.1:8000/users/getPickupRequests/`; // Example API endpoint
+    const headers = { 'Content-Type': 'application/json' };
+    const body = { shift_id: shiftId }; // Send the shift ID in JSON format
+
+    this.http.post(apiUrl, body, { headers }).subscribe(
+      (response: any) => {
+        this.users = response.shift.employee.username || [];
+      },
+      error => {
+        console.error('Error fetching shift requests:', error);
+      }
+    );
+
+    const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw',
+      data: { shiftId }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed', result);
+    });
+  }
 }
