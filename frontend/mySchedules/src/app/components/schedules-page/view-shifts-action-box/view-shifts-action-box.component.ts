@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class ViewShiftsActionBoxComponent implements OnInit {
   users: any[] = [];
   shiftRequests: any[] = [];
+  status: any;
   shiftId: number | undefined;
 
   constructor(
@@ -19,6 +20,7 @@ export class ViewShiftsActionBoxComponent implements OnInit {
   ) {
     this.shiftId = data.shiftId; // Get the shift ID passed via the dialog
     this.users = data.username;
+    this.status = data.status;
   }
 
   ngOnInit(): void {
@@ -51,7 +53,8 @@ export class ViewShiftsActionBoxComponent implements OnInit {
       response => {
         console.log(`User ${user} approved successfully`, response);
         // Optionally remove the approved user from the list
-        this.users = this.users.filter(u => u !== user);
+        // this.users = this.users.filter(u => u !== user);
+        this.dialogRef.close();
       },
       error => {
         console.error('Error approving user:', error);

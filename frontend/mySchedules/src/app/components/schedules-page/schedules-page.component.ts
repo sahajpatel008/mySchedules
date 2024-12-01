@@ -17,6 +17,7 @@ export class SchedulesPageComponent implements OnInit{
   locations:any;
   shiftDetails: any;
   shiftId: number | undefined;
+  shift_status: any;
   shifts: any[] = [];
   panelOpenState = false;
   params: any;
@@ -142,11 +143,12 @@ export class SchedulesPageComponent implements OnInit{
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
         this.users_shift = response.shift.employee.username || [];
+        this.shift_status = response.shift.employee.status;
         const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
           panelClass: 'custom-modalbox', 
           height: '60vh',
           width: '60vw',
-          data: { "username":this.users_shift, "shift_id": shiftId }
+          data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
         });
       
         dialogRef.afterClosed().subscribe(result => {
