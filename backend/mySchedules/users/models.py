@@ -63,7 +63,7 @@ class Shift(models.Model):
 class Pickup(models.Model):
     REQUEST_STATUS_CHOICES = [
         ('Approved', 'Approved'),
-        ('Pending', 'Pending'),
+        ('Request', 'Request'),
         ('Declined', 'Declined'),
     ]
 

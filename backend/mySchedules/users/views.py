@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
-from users.models import User, UniqueShift, Shift
+from users.models import User, UniqueShift, Shift, Pickup
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -276,7 +276,13 @@ def pickupShift_view(request):
             shift_obj, created = Shift.objects.get_or_create(
                 shift_id = shift_obj,
                 employee = employee_obj,
-                defaults={'status': 'Pending'}  # Only used when creating a new object
+                defaults={'status': 'Request'}  # Only used when creating a new object
+            )
+
+            Pickup.objects.create(
+                shift=shift_obj,
+                employee=employee_obj,
+                defaults={'request_status': 'Request'}
             )
 
             if not created:
@@ -302,7 +308,7 @@ def get_shift_requests_view(request):
 
             req_shift_id = int(req_shift_id)
             # Get all requests for the given shift ID
-            shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Pending")
+            shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Request")
 
             # Prepare the data to return
             requests_data = [
