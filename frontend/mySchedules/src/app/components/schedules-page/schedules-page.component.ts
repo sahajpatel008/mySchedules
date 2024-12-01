@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 export class SchedulesPageComponent implements OnInit{
   range: FormGroup;
   users: any;
+  users_shift: any;
   locations:any;
   shiftDetails: any;
   shiftId: number | undefined;
@@ -140,22 +141,22 @@ export class SchedulesPageComponent implements OnInit{
 
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
-        this.users = response.shift.employee.username || [];
+        this.users_shift = response.shift.employee.username || [];
+        const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
+          panelClass: 'custom-modalbox', 
+          height: '60vh',
+          width: '60vw',
+          data: { "username":this.users_shift, "shift_id": shiftId }
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('Dialog closed', result);
+        });
       },
       error => {
         console.error('Error fetching shift requests:', error);
       }
     );
 
-    const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
-      panelClass: 'custom-modalbox', 
-      height: '60vh',
-      width: '60vw',
-      data: { shiftId }
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog closed', result);
-    });
   }
 }

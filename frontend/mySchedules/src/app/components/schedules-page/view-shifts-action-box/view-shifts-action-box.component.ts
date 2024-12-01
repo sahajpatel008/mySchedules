@@ -18,6 +18,7 @@ export class ViewShiftsActionBoxComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.shiftId = data.shiftId; // Get the shift ID passed via the dialog
+    this.users = data.username;
   }
 
   ngOnInit(): void {
