@@ -273,13 +273,16 @@ def pickupShift_view(request):
             except User.DoesNotExist:
                 return JsonResponse({"error": "Employee not found."}, status=404)
             
-            shift_obj = Shift.objects.create(
+            shift_obj, created = Shift.objects.get_or_create(
                 shift_id = shift_obj,
                 employee = employee_obj,
-                status = "Pending"
+                defaults={'status': 'Pending'}  # Only used when creating a new object
             )
 
-            return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
+            if not created:
+                return JsonResponse({"message": "shift pickup request already exists."}, status=400)
+            else:
+                return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
 
         except Exception as e:
             print("Exception:", e)
