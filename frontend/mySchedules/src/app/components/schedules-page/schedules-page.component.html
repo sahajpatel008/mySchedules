@@ -90,7 +90,7 @@
         <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
       </ul>
       
-      <div style="display:flex">
+      <!-- <div style="display:flex">
         <div>
           <ul class="users">
             <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
@@ -101,7 +101,34 @@
             <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
           </ul>
         </div>
+      </div> --><div *ngIf="shiftsAsPerLocation">
+        <p>hello</p>
+  <div *ngFor="let user of getKeys(shiftsAsPerLocation)">
+    <h2>User: {{ user }}</h2> <!-- Print the username -->
+
+    <div *ngFor="let day of shiftsAsPerLocation[user]">
+      <h3>Date: {{ day.date }}</h3>
+
+      <div *ngIf="day.shifts.length > 0; else noShift">
+        <div *ngFor="let shift of day.shifts">
+          <p><strong>Shift ID:</strong> {{ shift.shift_id }}</p>
+          <p><strong>Start Time:</strong> {{ shift.start_time }}</p>
+          <p><strong>End Time:</strong> {{ shift.end_time }}</p>
+          <p><strong>Location:</strong> {{ shift.location }}</p>
+        </div>
       </div>
+
+      <ng-template #noShift>
+        <p>No shifts available for this date.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!shiftsAsPerLocation">
+  <p>No shift data available.</p>
+</div>
+
     </div>
   
   </mat-expansion-panel>

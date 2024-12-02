@@ -48,10 +48,10 @@ export class LoginPageComponent {
           console.log(response);
           console.log(this.registerForm.value)
           let username;
-          this.registerForm.value.forEach((element: any) => {
+          // this.registerForm.value.forEach((element: any) => {
             
-            username = element.user;
-          });
+          //   username = element.user;
+          // });
           console.log(username)
           console.log(username);
           if (username === 'manager') {
