@@ -52,7 +52,6 @@ export class LoginPageComponent {
             
           //   username = element.user;
           // });
-          console.log(username)
           console.log(username);
           if (username === 'manager') {
             this.router.navigate(['/SchedulesPageComponent']); // Route to manager path

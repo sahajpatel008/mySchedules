@@ -19,7 +19,7 @@ export class SchedulesPageComponent implements OnInit{
   shiftDetails: any;
   shiftId: number | undefined;
   shift_status: any;
-  shifts: any[] = [];
+  shifts: any;
   panelOpenState = false;
   params: any;
   startDate: any;
@@ -158,13 +158,14 @@ export class SchedulesPageComponent implements OnInit{
 
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        this.shifts = response.shifts; // Assuming the backend returns a list of shifts
+        console.log(response)
+        this.shifts = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shifts)
       },
       error => console.error(error)
     );
     let shiftId,userName
-    this.shifts.forEach(ele =>{
+    this.shifts.forEach((ele: any) =>{
       shiftId = ele.shift_id;
       userName = ele.user;
     })
@@ -204,7 +205,8 @@ export class SchedulesPageComponent implements OnInit{
 
   viewShiftsAsPerLocations(){
     let shift_location;
-    this.shifts.forEach(ele => {
+    console.log(this.shifts)
+    this.shifts.forEach((ele: any) => {
       shift_location = ele.shift_id
     });
 
@@ -216,8 +218,8 @@ export class SchedulesPageComponent implements OnInit{
       end_date: this.range.value.end?.getTime(),
       location: shift_location,
     };
-
-    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+    console.log(this.params)
+    this.http.post(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shiftsAsPerLocation = response.shifts; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)

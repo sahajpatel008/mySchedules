@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {FormControl, Validators, FormBuilder, FormGroup, AbstractControl, ValidationErrors} from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -14,7 +15,7 @@ export class SignUpPageComponent {
   registerForm: FormGroup;
   data: any;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private router: Router) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -57,6 +58,7 @@ export class SignUpPageComponent {
         response => console.log(response),
         error => console.error(error)
       );
+      this.router.navigate(['/']);
     }    
   }
 }
