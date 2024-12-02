@@ -270,7 +270,7 @@ def getShifts_view(request):
                 current_date += timedelta(days=1)
 
             # Return the shifts data as a JSON response
-            return JsonResponse({"data": shifts_data})
+            return JsonResponse({"data": shifts_data}, status=201)
 
 
             # # Filter shifts within the date range and order them by date in ascending order
@@ -436,17 +436,21 @@ def getshifts_allusers_view(request):
             # Extract data from the request
             # data = json.loads(request.body)
             # print(data)
-            start_date = request.GET.get('start_date')
-            end_date = request.GET.get('end_date')
+            print(request.GET)
             location = request.GET.get('location')
-            # print(start_date)
+            print(location)
+            print(request.GET.get('start_date'))
+            start_date_str = int(float(request.GET.get('start_date'))/1000)  # e.g., "2024-11-01"
+            end_date_str = int(float(request.GET.get('end_date'))/1000) 
+            print(start_date_str)
             # format_string = "%Y-%m-%d"
             # start_date = datetime.datetime.strptime(start_date, format_string)
-            start_date = datetime.datetime.fromtimestamp(start_date).date()
-            end_date = datetime.datetime.fromtimestamp(end_date).date()
+            start_date = datetime.datetime.fromtimestamp(start_date_str)
+            end_date = datetime.datetime.fromtimestamp(end_date_str)
             # end_date = datetime.datetime.strptime(end_date, format_string)
+
+            print(start_date, type(start_date))
             
-  
 
             if not all([start_date, end_date, location]):
                 return JsonResponse({"error": "Missing required fields: start_date, end_date, or location"}, status=400)
@@ -460,8 +464,8 @@ def getshifts_allusers_view(request):
 
             # print("lol idhar ",shifts)
             # Get all users who have been assigned at least one shift in the location and range
-            employees = list(User.objects.filter(role="employee"))
-
+            employees = User.objects.filter(role="employee")
+            print(employees)
             # Prepare a response dictionary where each user is a key
             response_data = {}
             all_dates = []
@@ -486,8 +490,8 @@ def getshifts_allusers_view(request):
                         shifts_by_date[shift.date] = []
                     shifts_by_date[shift.date].append({
                         "shift_id": shift.shift_id,
-                        "start_time": shift.start_time,
-                        "end_time": shift.end_time
+                        "start_time": shift.start_time.strftime("%I:%M %p"),
+                        "end_time": shift.end_time.strftime("%I:%M %p")
                     })
                     # print("Yeh dekho ",shifts_by_date)
 
@@ -500,12 +504,15 @@ def getshifts_allusers_view(request):
                         user_shifts_with_empty_dates.append(shifts_by_date[date])
                     else:
                         user_shifts_with_empty_dates.append([])  # Empty list for dates with no shifts
-                print(user_shifts_with_empty_dates)
+                # print(user_shifts_with_empty_dates)
                 response_data[user.username] = user_shifts_with_empty_dates
-            # print(employees)
-            return JsonResponse({"data": response_data}, status=200)
+            print(response_data)
+            # for r in response_data.keys():
+            #     print(response_data[r])
+            return JsonResponse({"data": response_data}, status=201)
 
         except Exception as e:
+            print("Error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
