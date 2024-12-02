@@ -27,22 +27,24 @@ export class ViewShiftsActionBoxComponent implements OnInit {
     if (this.status) {
       console.log(`User ${this.users} approved successfully`);
     }
+    this.getEmployeesByShiftId(this.shiftId)
   }
 
-  // getEmployeesByShiftId(shiftId: number): void {
-  //   const apiUrl = `http://127.0.0.1:8000/users/getPickupRequests/`; // Example API endpoint
-  //   const headers = { 'Content-Type': 'application/json' };
-  //   const body = { shift_id: shiftId }; // Send the shift ID in JSON format
+  getEmployeesByShiftId(shiftId: any): void {
+    console.log(this.shiftId)
+    const apiUrl = `http://127.0.0.1:8000/users/getPickupRequests/`; // Example API endpoint
+    const headers = { 'Content-Type': 'application/json' };
+    const body = { shift_id: shiftId }; // Send the shift ID in JSON format
 
-  //   this.http.post(apiUrl, body, { headers }).subscribe(
-  //     (response: any) => {
-  //       this.users = response.shift.employee.username || [];
-  //     },
-  //     error => {
-  //       console.error('Error fetching shift requests:', error);
-  //     }
-  //   );
-  // }
+    this.http.post(apiUrl, body, { headers }).subscribe(
+      (response: any) => {
+        this.users = response.shift.employee.username || [];
+      },
+      error => {
+        console.error('Error fetching shift requests:', error);
+      }
+    );
+  }
 
   approveUser(user: string): void {
     const apiUrl = `http://127.0.0.1:8000/users/approvePickupRequests/`; // Example API endpoint

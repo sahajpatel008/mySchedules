@@ -75,6 +75,7 @@ export class SchedulesPageComponent implements OnInit{
 
     this.getShift();
     this.range.valueChanges.subscribe(() => {
+      console.log(1)
       this.getShift();
     });
   }
@@ -155,6 +156,7 @@ export class SchedulesPageComponent implements OnInit{
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shifts = response.shifts; // Assuming the backend returns a list of shifts
+        console.log(this.shifts)
       },
       error => console.error(error)
     );
@@ -165,25 +167,26 @@ export class SchedulesPageComponent implements OnInit{
     const headers = { 'Content-Type': 'application/json' };
     const body = { shift_id: shiftId }; // Send the shift ID in JSON format
 
-    this.http.post(apiUrl, body, { headers }).subscribe(
-      (response: any) => {
-        this.users_shift = response.shift.employee.username || [];
-        this.shift_status = response.shift.employee.status;
-        const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
-          panelClass: 'custom-modalbox', 
-          height: '60vh',
-          width: '60vw',
-          data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
-        });
+    const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw',
+      data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
+    });
+    // this.http.post(apiUrl, body, { headers }).subscribe(
+    //   (response: any) => {
+    //     this.users_shift = response.shift.employee.username || [];
+    //     this.shift_status = response.shift.employee.status;
+
       
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('Dialog closed', result);
-        });
-      },
-      error => {
-        console.error('Error fetching shift requests:', error);
-      }
-    );
+    //     dialogRef.afterClosed().subscribe(result => {
+    //       console.log('Dialog closed', result);
+    //     });
+    //   },
+    //   error => {
+    //     console.error('Error fetching shift requests:', error);
+    //   }
+    // );
 
   }
 }
