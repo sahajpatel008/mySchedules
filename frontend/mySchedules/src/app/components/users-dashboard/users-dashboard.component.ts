@@ -112,7 +112,8 @@ export class UsersDashboardComponent {
     console.log(this.params)
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        this.availableShifts = response.shifts; // Assuming the backend returns a list of shifts
+        console.log(response);
+        this.availableShifts = response.data; // Assuming the backend returns a list of shifts
         console.log(this.availableShifts)
         
         this.availableShifts.forEach((element: any) => {
