@@ -45,18 +45,13 @@ export class LoginPageComponent {
 
       this.http.post(apiUrl, body, { headers }).subscribe(
         (response: any) => {
-          console.log(response);
-          console.log(this.registerForm.value)
-          let username;
-          // this.registerForm.value.forEach((element: any) => {
-            
-          //   username = element.user;
-          // });
-          console.log(username);
-          if (username === 'manager') {
-            this.router.navigate(['/SchedulesPageComponent']); // Route to manager path
+          console.log(this.registerForm.value.username)
+
+          let user = response.user;
+          if (user === 'manager') {
+            this.router.navigate(['/schedulesPage']); // Route to manager path
           } else {
-            this.router.navigate(['/UsersDashboardComponent']); // Route to employee path
+            this.router.navigate(['/UsersDashboard']); // Route to employee path
           }
         },
         (error) => {
