@@ -285,7 +285,7 @@ def pickupShift_view(request):
             Pickup.objects.create(
                 shift=shift_obj,
                 employee=employee_obj,
-                defaults={'request_status': 'Request'}
+                request_status= 'Request'
             )
             
             
