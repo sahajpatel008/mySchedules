@@ -245,7 +245,7 @@ export class SchedulesPageComponent implements OnInit{
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         console.log(response);
-        this.shiftsAsPerLocation = response.shifts; // Assuming the backend returns a list of shifts
+        this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)
       },
       error => console.error(error)
