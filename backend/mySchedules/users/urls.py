@@ -10,6 +10,6 @@ urlpatterns = [
     path('pickupShift/', views.pickupShift_view, name='pickupShift'),
     path("getPickupRequests/", views.get_shift_requests_view,name='getPickup'),
     path('approvePickupRequests/', views.approve_shift_request_view, name='approveRequests'),
-    path('getShifts_allUsers/', views.getshifts_allusers, name='getshifts_allusers'),
+    path('getShifts_allUsers/', views.getshifts_allusers_view, name='getshifts_allusers'),
     path("home/", views.home, name='home')
 ]
