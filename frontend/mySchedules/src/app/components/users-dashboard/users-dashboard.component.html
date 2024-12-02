@@ -67,9 +67,28 @@
           <ul class="dates" style="display:flex;">
             <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
           </ul>
+
+          <button (click)="shiftPickUp()"> 
+            sdhsk
+          </button>
           <ul class="usersData" style="display:flex;">
-            <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass"></li>
+            <li *ngFor="let shift of availableShifts" class="usersClass" (click)="shiftPickUp()">{{shift.location}}</li>
           </ul>
+
+          <!-- <ul class="usersData" style="display: flex;">
+            <span *ngIf="!shiftData" style="display: flex;">
+              <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
+            </span>
+            <li *ngFor="let dateEntry of shiftData?.dates" class="usersClass">  
+              <ul>
+                <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="getEmployeesByShiftId(shift.shiftId)">
+                  <strong>Location:</strong> {{ shift.location }}<br>
+                  <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
+                </li>
+                <li *ngIf="dateEntry.data.length === 0"></li>
+              </ul>
+            </li>
+          </ul> -->
         </div>
       </div>
   
@@ -109,7 +128,9 @@
     </mat-tab>
   </mat-tab-group>
   
-  
+  <div class="footer">
+    <button mat-raised-button (click)="logOut()" style="margin: 1%;">Logout</button>
+  </div>
   
   
     

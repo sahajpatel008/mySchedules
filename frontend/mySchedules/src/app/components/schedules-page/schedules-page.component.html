@@ -1,82 +1,116 @@
-<div class="schedulesPageHeader">
-  <div style="padding:2%">
-    <mat-form-field>
-      <mat-label>Enter a date range</mat-label>
-      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Start date">
-        <input matEndDate formControlName="end" placeholder="End date">
-      </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-    </mat-form-field>
-  </div>
-  
-  <div class="actionBtns">
-    <button mat-raised-button (click)="addShift('')">Add Shift</button>
-  </div>
-</div>
-
-<div class="displayDates">
-  <div style=" margin:2% 0;">
-    <ul class="dates" style="display: flex;">
-      <li *ngFor="let date of getDatesInRange()" class="dateClass">
-        {{ date | date: 'MM/dd/yyyy' }}
-      </li>
-    </ul>
+<div style="overflow: auto;height: 100%;">
+  <div class="schedulesPageHeader">
+    <div style="padding:2%">
+      <mat-form-field>
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Start date">
+          <input matEndDate formControlName="end" placeholder="End date">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
     
-    <ul class="usersData" style="display: flex;">
-      <span *ngIf="!shiftData" style="display: flex;">
-        <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
-      </span>
-      <li *ngFor="let dateEntry of shiftData?.dates" class="usersClass">  
-        <ul>
-          <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="getEmployeesByShiftId(shift.shiftId)">
-            <strong>Location:</strong> {{ shift.location }}<br>
-            <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
-          </li>
-          <li *ngIf="dateEntry.data.length === 0"></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<div style="margin:2%">
-  <mat-accordion>
-    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" 
-       *ngFor="let location of locations" style="padding: 1%;">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      {{location.loc}}
-    </mat-panel-title>
-  </mat-expansion-panel-header>
-  
-  <div class="displayDates">
-    <ul class="dates">
-      <li class="dateClass"></li>
-      <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-    </ul>
-    
-    <div style="display:flex">
-      <div>
-        <ul class="users">
-          <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-        </ul>
-      </div>
-      <div>
-        <ul *ngFor="let user of users" class="usersData" style="display:flex">
-          <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-        </ul>
-      </div>
+    <div class="actionBtns">
+      <button mat-raised-button (click)="addShift('')">Add Shift</button>
     </div>
   </div>
-
-</mat-expansion-panel>
-</mat-accordion>
+  
+  <mat-tab-group>
+    <mat-tab label="Posted Shifts">
+      <div class="displayDates">
+        <div style=" margin:2% 0;">
+          <ul class="dates" style="display: flex;">
+            <li *ngFor="let date of getDatesInRange()" class="dateClass">
+              {{ date | date: 'MM/dd/yyyy' }}
+            </li>
+          </ul>
+          
+          <ul class="usersData" style="display: flex;">
+            <span *ngIf="!shiftData" style="display: flex;">
+              <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
+            </span>
+            <li *ngFor="let dateEntry of shiftData?.dates" class="usersClass">  
+              <ul>
+                <li *ngFor="let shift of dateEntry.data" class="shiftsContainer">
+                  <strong>Location:</strong> {{ shift.location }}<br>
+                  <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
+                </li>
+                <li *ngIf="dateEntry.data.length === 0"></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div> 
+    </mat-tab>
+    <mat-tab label="Requested Shifts"> 
+      <div class="displayDates">
+        <div style=" margin:2% 0;">
+          <ul class="dates" style="display: flex;">
+            <li *ngFor="let date of getDatesInRange()" class="dateClass">
+              {{ date | date: 'MM/dd/yyyy' }}
+            </li>
+          </ul>
+          
+          <ul class="usersData" style="display: flex;">
+            <span *ngIf="!shiftData" style="display: flex;">
+              <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
+            </span>
+            <li *ngFor="let dateEntry of shiftData?.dates" class="usersClass">  
+              <ul>
+                <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="getEmployeesByShiftId(shift.shift_id)">
+                  <strong>Location:</strong> {{ shift.location }}<br>
+                  <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
+                </li>
+                <li *ngIf="dateEntry.data.length === 0"></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div> 
+    </mat-tab>
+  </mat-tab-group>
+  
+  
+  <div style="margin:2%">
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" 
+         *ngFor="let location of locations" style="padding: 1%;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{location.loc}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <div class="displayDates">
+      <ul class="dates">
+        <li class="dateClass"></li>
+        <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+      </ul>
+      
+      <div style="display:flex">
+        <div>
+          <ul class="users">
+            <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
+          </ul>
+        </div>
+        <div>
+          <ul *ngFor="let user of users" class="usersData" style="display:flex">
+            <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  
+  </mat-expansion-panel>
+  </mat-accordion>
+  </div>
 </div>
 
-
-
+<div class="footer">
+  <button mat-raised-button (click)="logOut()" style="margin: 1%;">Logout</button>
+</div>
 
   

@@ -4,6 +4,7 @@ import { ShiftsActionBoxComponent } from './shifts-action-box/shifts-action-box.
 import { ViewShiftsActionBoxComponent } from './view-shifts-action-box/view-shifts-action-box.component';
 import {MatDialog} from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-schedules-page',
@@ -28,7 +29,8 @@ export class SchedulesPageComponent implements OnInit{
   shiftData:any;
 
   constructor(public dialog: MatDialog,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private router: Router) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
       start: new FormControl<Date | null>(null),
@@ -152,7 +154,6 @@ export class SchedulesPageComponent implements OnInit{
       end_date: this.range.value.end?.getTime(),
     };
 
-    console.log(this.params);
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shifts = response.shifts; // Assuming the backend returns a list of shifts
@@ -163,30 +164,32 @@ export class SchedulesPageComponent implements OnInit{
   }
   
   getEmployeesByShiftId(shiftId: number): void {
-    const apiUrl = `http://127.0.0.1:8000/users/getPickupRequests/`; // Example API endpoint
-    const headers = { 'Content-Type': 'application/json' };
-    const body = { shift_id: shiftId }; // Send the shift ID in JSON format
-
     const dialogRef = this.dialog.open(ViewShiftsActionBoxComponent, {
       panelClass: 'custom-modalbox', 
       height: '60vh',
       width: '60vw',
       data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
     });
-    // this.http.post(apiUrl, body, { headers }).subscribe(
-    //   (response: any) => {
-    //     this.users_shift = response.shift.employee.username || [];
-    //     this.shift_status = response.shift.employee.status;
+  }
+  requestedShifts(userName: any){
+    const apiUrl = ' ';
+    const headers = { 'Content-Type': 'application/json' };
 
-      
-    //     dialogRef.afterClosed().subscribe(result => {
-    //       console.log('Dialog closed', result);
-    //     });
-    //   },
-    //   error => {
-    //     console.error('Error fetching shift requests:', error);
-    //   }
-    // );
+    this.params = {
+      start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime(),
+      userName
+    };
 
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        this.shifts = response.shifts; // Assuming the backend returns a list of shifts
+        console.log(this.shifts)
+      },
+      error => console.error(error)
+    );
+  }
+  logOut(){
+    this.router.navigate(['/']);
   }
 }

@@ -36,6 +36,7 @@ export class LoginPageComponent {
   
   onLogin(){
     this.router.navigate(['/schedulesPage']);
+
     if (this.registerForm.valid) {
       const apiUrl = ' http://127.0.0.1:8000/users/login/';
     
@@ -46,6 +47,16 @@ export class LoginPageComponent {
         response => console.log(response),
         error => console.error(error)
       );
+      console.log(this.registerForm.value)
+      const username = this.registerForm.value.user;
+      console.log(username)
+      if (username === 'manager') {
+        this.router.navigate(['/SchedulesPageComponent']); // Route to manager path
+      } else if (username === 'employee') {
+        this.router.navigate(['/UsersDashboardComponent']); // Route to employee path
+      } else {
+        alert('Invalid credentials! Please try again.');
+      }
     }
   }
 }

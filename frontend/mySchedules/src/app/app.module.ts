@@ -23,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
 import { UsersDashboardComponent } from './components/users-dashboard/users-dashboard.component';
 import { ViewShiftsActionBoxComponent } from './components/schedules-page/view-shifts-action-box/view-shifts-action-box.component';
+import { PickUpShiftsComponent } from './components/users-dashboard/pick-up-shifts/pick-up-shifts.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ViewShiftsActionBoxComponent } from './components/schedules-page/view-s
     ShiftsActionBoxComponent,
     SignUpPageComponent,
     UsersDashboardComponent,
-    ViewShiftsActionBoxComponent
+    ViewShiftsActionBoxComponent,
+    PickUpShiftsComponent
   ],
   imports: [
     BrowserModule,

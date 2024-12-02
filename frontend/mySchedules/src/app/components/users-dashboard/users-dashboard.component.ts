@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import { PickUpShiftsComponent } from './pick-up-shifts/pick-up-shifts.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users-dashboard',
@@ -12,11 +14,12 @@ export class UsersDashboardComponent {
   range: FormGroup;
   users: any;
   locations:any;
-  
+  availableShifts: any;
   panelOpenState = false;
   params: any;
-  
-  constructor(public dialog: MatDialog, private http: HttpClient) {
+  shiftId: any;
+  user: any;
+  constructor(public dialog: MatDialog, private http: HttpClient,private router: Router) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
       start: new FormControl<Date | null>(null),
@@ -107,9 +110,26 @@ export class UsersDashboardComponent {
     }
 
     console.log(this.params)
-    this.http.get(apiUrl, {params: this.params, headers}).subscribe(
-      response => console.log(response),
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        this.availableShifts = response.shifts; // Assuming the backend returns a list of shifts
+        console.log(this.availableShifts)
+        this.shiftId = this.availableShifts.shift_id
+        this.user = this.availableShifts.user
+      },
       error => console.error(error)
     );
+  }
+  shiftPickUp(){
+    const dialogRef = this.dialog.open(PickUpShiftsComponent, {
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw',
+      data: {"shift_id": this.shiftId, "username": this.user }
+    });
+  }
+
+  logOut(){
+    this.router.navigate(['/']);
   }
 }
