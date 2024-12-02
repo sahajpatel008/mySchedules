@@ -158,19 +158,50 @@ export class SchedulesPageComponent implements OnInit{
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
     };
-
+    
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
+        // console.log(response)
         this.shifts = response.data; // Assuming the backend returns a list of shifts
+        console.log(this.shifts)
+
+        this.shifts.forEach((entry: any) => {
+          console.log(`Date: ${entry.date}`);
+          let shiftId, userName;
+          // Check if there are any shifts for the current date
+          if (entry.data.length > 0) {
+            entry.data.forEach((shift: any) => {
+    this.viewShiftsAsPerLocations(shift.location);
+
+              shiftId = shift.shift_id;
+              userName = shift.user;
+            });
+          } else {
+            console.log("No shifts for this date.");
+          }
+        // let shiftId,userName
+        // console.log(this.shifts);
+        // this.shifts.forEach((ele: any) =>{
+        //   console.log(ele.data);
+        //   ele.data.forEach((element: any) =>{
+        //     element.forEach((element1: any) =>{
+        //       shiftId = element1.shift_id;
+        //       userName = element1.user;
+        //     });
+        //   });
+          
+        })
+        // console.log(shiftId);
+        // console.log(userName);
+        // this.requestedShifts(shiftId, userName)
+        // // console.log(this.shifts)
+        // this.shifts.forEach((element: any) => {
+        //   // console.log(element.date)
+        // });
       },
       error => console.error(error)
     );
-    let shiftId,userName;
-    this.shifts.forEach((ele: any) =>{
-      shiftId = ele.shift_id;
-      userName = ele.user;
-    });
-    this.requestedShifts(shiftId, userName)
+    
   }
   
   getEmployeesByShiftId(shiftId: number): void {
@@ -203,26 +234,20 @@ export class SchedulesPageComponent implements OnInit{
     this.router.navigate(['/']);
   }
 
-  viewShiftsAsPerLocations(){
-    let shift_location;
-    console.log(this.shifts)
-    this.shifts.forEach((ele: any) => {
-      shift_location = ele.shift_id
-    });
-
+  viewShiftsAsPerLocations(shift: any){
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
     const headers = { 'Content-Type': 'application/json' };
-
+    // console.log(shift);
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
-      location: shift_location,
+      location: shift,
     };
-    console.log(this.params)
-    this.http.post(apiUrl, { params: this.params, headers }).subscribe(
+    // console.log(this.params)
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         console.log(response);
-        this.shiftsAsPerLocation = response.shifts; // Assuming the backend returns a list of shifts
+        this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)
       },
       error => console.error(error)

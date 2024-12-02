@@ -32,7 +32,7 @@
             <span *ngIf="!shifts" style="display: flex;">
               <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
             </span>
-            <li *ngFor="let dateEntry of shifts" class="usersClass">  
+            <li *ngFor="let dateEntry of shifts?.date" class="usersClass">  
               <ul>
                 <li *ngFor="let shift of dateEntry.data" class="shiftsContainer">
                   <strong>Location:</strong> {{ shift.location }}<br>
@@ -101,26 +101,28 @@
             <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
           </ul>
         </div>
-      </div> --><div *ngIf="shiftsAsPerLocation">
-        <p>hello</p>
+      </div> -->
+      
+<div *ngIf="shiftsAsPerLocation">
   <div *ngFor="let user of getKeys(shiftsAsPerLocation)">
     <h2>User: {{ user }}</h2> <!-- Print the username -->
 
     <div *ngFor="let day of shiftsAsPerLocation[user]">
       <h3>Date: {{ day.date }}</h3>
 
-      <div *ngIf="day.shifts.length > 0; else noShift">
-        <div *ngFor="let shift of day.shifts">
+      <div>
+        <div *ngFor="let shift of day">
+
           <p><strong>Shift ID:</strong> {{ shift.shift_id }}</p>
           <p><strong>Start Time:</strong> {{ shift.start_time }}</p>
           <p><strong>End Time:</strong> {{ shift.end_time }}</p>
-          <p><strong>Location:</strong> {{ shift.location }}</p>
+          <!-- <p><strong>Location:</strong> {{ shift.location }}</p>  -->
         </div>
       </div>
 
-      <ng-template #noShift>
+      <!-- <ng-template #noShift>
         <p>No shifts available for this date.</p>
-      </ng-template>
+      </ng-template> -->
     </div>
   </div>
 </div>
