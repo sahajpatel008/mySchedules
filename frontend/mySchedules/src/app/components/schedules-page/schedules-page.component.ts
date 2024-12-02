@@ -161,6 +161,9 @@ export class SchedulesPageComponent implements OnInit{
         console.log(response)
         this.shifts = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shifts)
+        this.shifts.forEach((element: any) => {
+          console.log(element.date)
+        });
       },
       error => console.error(error)
     );
