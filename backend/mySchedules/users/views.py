@@ -7,8 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
-
-from users.models import User, UniqueShift, Shift
+from django.utils.dateparse import parse_date
+from datetime import timedelta
+from users.models import Pickup, User, UniqueShift, Shift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -273,13 +274,25 @@ def pickupShift_view(request):
             except User.DoesNotExist:
                 return JsonResponse({"error": "Employee not found."}, status=404)
             
-            shift_obj = Shift.objects.create(
+            not_unique_shift_obj, created = Shift.objects.get_or_create(
                 shift_id = shift_obj,
                 employee = employee_obj,
-                status = "Pending"
+                defaults={'status': "Request"}
             )
 
+            if not created:
+                return JsonResponse({"message": "shift pickup request already exists."}, status=400)
+            
+            Pickup.objects.create(
+                shift=shift_obj,
+                employee=employee_obj,
+                request_status= 'Request'
+            )
+            
+            
             return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
+
+            
 
         except Exception as e:
             print("Exception:", e)
@@ -362,6 +375,68 @@ def approve_shift_request_view(request):
 
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
             
+@csrf_exempt
+def getshifts_allusers(request):
+    if request.method == 'POST':
+        try:
+            # Extract data from the request
+            data = request.json()
+            start_date = parse_date(data.get('start_date'))
+            end_date = parse_date(data.get('end_date'))
+            location = data.get('location')
+
+            if not all([start_date, end_date, location]):
+                return JsonResponse({"error": "Missing required fields: start_date, end_date, or location"}, status=400)
+
+            # Query all shifts in the range and location
+            shifts = UniqueShift.objects.filter(
+                date__range=(start_date, end_date),
+                location=location
+            ).select_related('employee')
+
+            # Get all users who have been assigned at least one shift in the location and range
+            users_with_shifts = User.objects.filter(
+                username__in=shifts.values_list('employee__username', flat=True)
+            )
+
+            # Prepare a response dictionary where each user is a key
+            response_data = {}
+            all_dates = []
+            current_date = start_date
+            while current_date <= end_date:
+                all_dates.append(current_date)
+                current_date += timedelta(days=1)
+
+            for user in users_with_shifts:
+                user_shifts = shifts.filter(employee=user)
+
+                # Group shifts by date, allowing multiple shifts on the same day
+                shifts_by_date = {}
+                for shift in user_shifts:
+                    if shift.date not in shifts_by_date:
+                        shifts_by_date[shift.date] = []
+                    shifts_by_date[shift.date].append({
+                        "shift_id": shift.shift_id,
+                        "start_time": shift.start_time,
+                        "end_time": shift.end_time
+                    })
+
+                # Add all dates to the response, including empty ones
+                user_shifts_with_empty_dates = []
+                for date in all_dates:
+                    if date in shifts_by_date:
+                        user_shifts_with_empty_dates.append(shifts_by_date[date])
+                    else:
+                        user_shifts_with_empty_dates.append([])  # Empty list for dates with no shifts
+
+                response_data[user.username] = user_shifts_with_empty_dates
+
+            return JsonResponse({"data": response_data}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 @login_required
 def home(request):
