@@ -24,9 +24,9 @@ export class ViewShiftsActionBoxComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // if (this.shiftId) {
-    //   this.getEmployeesByShiftId(this.shiftId);
-    // }
+    if (this.status) {
+      console.log(`User ${this.users} approved successfully`);
+    }
   }
 
   // getEmployeesByShiftId(shiftId: number): void {
