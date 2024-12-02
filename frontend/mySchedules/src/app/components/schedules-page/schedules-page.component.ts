@@ -28,6 +28,7 @@ export class SchedulesPageComponent implements OnInit{
   shiftDataByDate: { [key: string]: any[] } = {};
   shiftData:any;
   shiftsAsPerLocation:any;
+  usernameStorage: string | null = null;
 
   constructor(public dialog: MatDialog,
     private http: HttpClient,
@@ -82,6 +83,8 @@ export class SchedulesPageComponent implements OnInit{
       this.getShift();
     });
 
+    this.usernameStorage = localStorage.getItem('username');
+    console.log('Username:', this.usernameStorage);
   }
   
   getDatesInRange(): Date[] {
@@ -158,23 +161,15 @@ export class SchedulesPageComponent implements OnInit{
 
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        console.log(response)
         this.shifts = response.data; // Assuming the backend returns a list of shifts
-        console.log(this.shifts)
-        this.shifts.forEach((element: any) => {
-          console.log(element.date)
-        });
       },
       error => console.error(error)
     );
-    let shiftId,userName
-    console.log(this.shifts);
+    let shiftId,userName;
     this.shifts.forEach((ele: any) =>{
       shiftId = ele.shift_id;
       userName = ele.user;
-    })
-    console.log(shiftId);
-    console.log(userName);
+    });
     this.requestedShifts(shiftId, userName)
   }
   
@@ -200,7 +195,6 @@ export class SchedulesPageComponent implements OnInit{
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shifts = response.shifts; // Assuming the backend returns a list of shifts
-        console.log(this.shifts)
       },
       error => console.error(error)
     );

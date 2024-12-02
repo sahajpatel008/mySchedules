@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-shifts-action-box',
   templateUrl: './shifts-action-box.component.html',
-  styleUrls: ['./shifts-action-box.component.css']
+  styleUrls: ['./shifts-action-box.component.css'],
 })
 export class ShiftsActionBoxComponent {
   selectedValue: any;
@@ -18,10 +18,11 @@ export class ShiftsActionBoxComponent {
   start_time: string = '';
   end_time: string = '';
   params: any;
-
+  durationInSeconds = 5;
+  
   constructor(
     public dialogRef: MatDialogRef<ShiftsActionBoxComponent>,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
     this.generateTimeOptions();
   }

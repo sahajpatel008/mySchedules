@@ -24,6 +24,7 @@ import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.comp
 import { UsersDashboardComponent } from './components/users-dashboard/users-dashboard.component';
 import { ViewShiftsActionBoxComponent } from './components/schedules-page/view-shifts-action-box/view-shifts-action-box.component';
 import { PickUpShiftsComponent } from './components/users-dashboard/pick-up-shifts/pick-up-shifts.component';
+import { ShiftCreatedModalComponent } from './components/schedules-page/shifts-action-box/shift-created-modal/shift-created-modal.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PickUpShiftsComponent } from './components/users-dashboard/pick-up-shif
     SignUpPageComponent,
     UsersDashboardComponent,
     ViewShiftsActionBoxComponent,
-    PickUpShiftsComponent
+    PickUpShiftsComponent,
+    ShiftCreatedModalComponent
   ],
   imports: [
     BrowserModule,

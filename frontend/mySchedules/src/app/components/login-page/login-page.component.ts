@@ -45,7 +45,10 @@ export class LoginPageComponent {
 
       this.http.post(apiUrl, body, { headers }).subscribe(
         (response: any) => {
+
           console.log(this.registerForm.value.username)
+          const username = this.registerForm.value.username;
+          localStorage.setItem('username', username);
 
           let user = response.user;
           if (user === 'manager') {
