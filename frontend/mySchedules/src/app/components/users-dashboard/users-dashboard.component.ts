@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
@@ -13,8 +14,9 @@ export class UsersDashboardComponent {
   locations:any;
   
   panelOpenState = false;
+  params: any;
   
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, private http: HttpClient) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
       start: new FormControl<Date | null>(null),
@@ -54,21 +56,60 @@ export class UsersDashboardComponent {
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
+    this.getShift();
+    this.range.valueChanges.subscribe(() => {
+      this.getShift();
+    });
   }
 
-  getDatesInRange(): Date[] {
-    const startDate = this.range.value.start;
-    const endDate = this.range.value.end;
-    const dates: Date[] = [];
+  // getDatesInRange(): Date[] {
+  //   const startDate = this.range.value.start;
+  //   const endDate = this.range.value.end;
+  //   const dates: Date[] = [];
 
-    if (startDate && endDate) {
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
+  //   if (startDate && endDate) {
+  //     let currentDate = new Date(startDate);
+  //     while (currentDate <= endDate) {
+  //       dates.push(new Date(currentDate));
+  //       currentDate.setDate(currentDate.getDate() + 1);
+  //     }
+  //   }
+
+  //   return dates;
+  // }
+  getDatesInRange(): Date[] {
+    const start = this.range.get('start')?.value;
+    const end = this.range.get('end')?.value;
+  
+    const dates: Date[] = [];
+    if (start && end) {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+  
+      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d));
       }
     }
-
     return dates;
+  }
+  
+  formatDate(date: Date): string {
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  }
+
+  getShift(){
+    const apiUrl = ' http://127.0.0.1:8000/users/getShifts/';
+    const headers = { 'Content-Type': 'application/json' };
+
+    this.params = {
+      start_date: this.range.value.start?.getTime(),  // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime() 
+    }
+
+    console.log(this.params)
+    this.http.get(apiUrl, {params: this.params, headers}).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+    );
   }
 }

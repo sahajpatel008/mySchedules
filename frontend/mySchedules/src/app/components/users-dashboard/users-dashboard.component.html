@@ -15,29 +15,12 @@
   
   <mat-tab-group>
     <mat-tab label="My Shifts"> 
-  
-      <!-- <div class="displayDates">
-        <div>
-          <ul class="dates">
-            <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-          </ul>
-        </div>
-        
-        <div style="display:flex">
-          <div>
-            <ul *ngFor="let user of users" class="usersData" style="display:flex">
-              <li *ngFor="let date of getDatesInRange()" class="usersClass"></li>
-            </ul>
-          </div>
-        </div>
-      </div> -->
-  
       <div class="displayDates">
-        <div style="display: flex;">
-          <ul class="dates" style="display:flex;flex-direction: column;">
+        <div>
+          <ul class="dates" style="display:flex;">
             <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
           </ul>
-          <ul class="usersData" style="display:flex;flex-direction: column;">
+          <ul class="usersData" style="display:flex;">
             <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass"></li>
           </ul>
         </div>
@@ -79,27 +62,12 @@
     </div>
     </mat-tab>
     <mat-tab label="Available Shifts">
-      <!-- <div class="displayDates">
-        <div>
-          <ul class="dates">
-            <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-          </ul>
-        </div>
-        
-        <div style="display:flex">
-          <div>
-            <ul *ngFor="let user of users" class="usersData" style="display:flex">
-              <li *ngFor="let date of getDatesInRange()" class="usersClass"></li>
-            </ul>
-          </div>
-        </div>
-      </div> -->
       <div class="displayDates">
-        <div style="display: flex;">
-          <ul class="dates" style="display:flex;flex-direction: column;">
+        <div>
+          <ul class="dates" style="display:flex;">
             <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
           </ul>
-          <ul class="usersData" style="display:flex;flex-direction: column;">
+          <ul class="usersData" style="display:flex;">
             <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass"></li>
           </ul>
         </div>
@@ -133,7 +101,7 @@
               </ul>
             </div>
           </div>
-        </div>
+        </div>        
     
       </mat-expansion-panel>
     </mat-accordion>

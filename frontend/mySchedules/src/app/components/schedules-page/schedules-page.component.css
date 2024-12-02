@@ -9,7 +9,7 @@
 
 .displayDates{
     overflow: auto;
-    margin-top:2%;
+    margin:2% 0;
     padding: 0 2%;
 }
 
@@ -36,8 +36,8 @@
     border: 1px solid #e3e3e3;
     padding:1rem;
     list-style: none;
-    min-width:170px;
-    height: 7vh;
+    width:170px;
+    min-height:20vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -63,4 +63,5 @@
     padding: 2% 5%;
     border-left: 2px solid #91c8f8;
     margin: 1%;
+    font-size: 14px;
 }

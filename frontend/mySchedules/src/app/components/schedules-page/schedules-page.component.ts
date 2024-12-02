@@ -18,8 +18,12 @@ export class SchedulesPageComponent implements OnInit{
   params: any;
   startDate: any;
   endDate: any;
+  dateRange: any;
+  shiftDataByDate: { [key: string]: any[] } = {};
+  shiftData:any;
 
-  constructor(public dialog: MatDialog,private http: HttpClient) {
+  constructor(public dialog: MatDialog,
+    private http: HttpClient) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
       start: new FormControl<Date | null>(null),
@@ -65,35 +69,70 @@ export class SchedulesPageComponent implements OnInit{
       this.getShift();
     });
   }
-
+  
   getDatesInRange(): Date[] {
-   this.startDate = this.range.value.start;
-    this.endDate = this.range.value.end;
+    const start = this.range.get('start')?.value;
+    const end = this.range.get('end')?.value;
+  
     const dates: Date[] = [];
-
-    if (this.startDate && this.endDate) {
-      let currentDate = new Date(this.startDate);
-      while (currentDate <= this.endDate) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
+    if (start && end) {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+  
+      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d));
       }
-    }    
-
+    }
     return dates;
   }
-
-  addShift(user: any){
-    const dialogRef = this.dialog.open(ShiftsActionBoxComponent,{
-      panelClass: 'custom-modalbox', 
+  
+  formatDate(date: Date): string {
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  }
+  
+  addShift(user: any) {
+    const dialogRef = this.dialog.open(ShiftsActionBoxComponent, {
+      panelClass: 'custom-modalbox',
       height: '60vh',
       width: '60vw'
     });
-   
+  
     dialogRef.afterClosed().subscribe(result => {
-      this.shiftDetails = result;
-      console.log('Dialog result:', result);
+      if (result) {
+        this.shiftDetails = result;
+  
+        // Prepare the final structure
+        const finalJSON: { dates: { date: string, data: any[] }[] } = { dates: [] };
+  
+        // Iterate over all dates in the range and initialize
+        this.getDatesInRange().forEach(date => {
+          finalJSON.dates.push({
+            date: this.formatDate(new Date(date)),
+            data: []
+          });
+        });
+  
+        // Add the shift details to the matching date
+        const shiftDateKey = this.formatDate(new Date(this.shiftDetails.date));
+        const dateEntry = finalJSON.dates.find(entry => entry.date === shiftDateKey);
+  
+        if (dateEntry) {
+          dateEntry.data.push({
+            user: user.name,
+            location: this.shiftDetails.location,
+            start_time: this.shiftDetails.start_time,
+            end_time: this.shiftDetails.end_time
+          });
+        }
+  
+        this.shiftData = finalJSON;
+  
+        // Log the final JSON object
+        console.log('Final JSON:', this.shiftData);
+      }
     });
   }
+  
   getShift(){
     const apiUrl = ' http://127.0.0.1:8000/users/getShifts/';
     const headers = { 'Content-Type': 'application/json' };

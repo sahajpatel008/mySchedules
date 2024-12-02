@@ -18,16 +18,25 @@
 </div>
 
 <div class="displayDates">
-  <div style="display: flex;">
-    <ul class="dates" style="display:flex;flex-direction: column;">
-      <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+  <div style=" margin:2% 0;">
+    <ul class="dates" style="display: flex;">
+      <li *ngFor="let date of getDatesInRange()" class="dateClass">
+        {{ date | date: 'MM/dd/yyyy' }}
+      </li>
     </ul>
-    <ul class="usersData" style="display:flex;flex-direction: column;">
-      <li *ngFor="let date of getDatesInRange();let user of users" class="usersClass" (click)="addShift(user)">
-        <span *ngIf="shiftDetails" class="shiftsContainer">
-          {{shiftDetails.location}} <br/>
-          {{shiftDetails.start_time}} - {{shiftDetails.end_time}}
-        </span>  
+    
+    <ul class="usersData" style="display: flex;">
+      <span *ngIf="!shiftData" style="display: flex;">
+        <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
+      </span>
+      <li *ngFor="let dateEntry of shiftData?.dates" class="usersClass">  
+        <ul>
+          <li *ngFor="let shift of dateEntry.data" class="shiftsContainer">
+            <strong>Location:</strong> {{ shift.location }}<br>
+            <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
+          </li>
+          <li *ngIf="dateEntry.data.length === 0"></li>
+        </ul>
       </li>
     </ul>
   </div>
@@ -35,8 +44,8 @@
 
 <div style="margin:2%">
   <mat-accordion>
-    <mat-expansion-panel (opened)="panelOpenState = true"
-                     (closed)="panelOpenState = false" *ngFor="let location of locations" style="padding: 1%;">
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" 
+       *ngFor="let location of locations" style="padding: 1%;">
   <mat-expansion-panel-header>
     <mat-panel-title>
       {{location.loc}}
