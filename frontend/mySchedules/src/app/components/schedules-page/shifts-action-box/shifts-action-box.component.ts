@@ -102,6 +102,6 @@ export class ShiftsActionBoxComponent {
   }
   create_close_dialog(){
     this.createShift();
-    this.dialogRef.close(this.params);
+    // this.dialogRef.close(this.params);
   }
 }
