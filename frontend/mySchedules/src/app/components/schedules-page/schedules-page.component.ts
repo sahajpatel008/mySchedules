@@ -165,10 +165,13 @@ export class SchedulesPageComponent implements OnInit{
       error => console.error(error)
     );
     let shiftId,userName
+    console.log(this.shifts);
     this.shifts.forEach((ele: any) =>{
       shiftId = ele.shift_id;
       userName = ele.user;
     })
+    console.log(shiftId);
+    console.log(userName);
     this.requestedShifts(shiftId, userName)
   }
   
@@ -221,6 +224,7 @@ export class SchedulesPageComponent implements OnInit{
     console.log(this.params)
     this.http.post(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
+        console.log(response);
         this.shiftsAsPerLocation = response.shifts; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)
       },
