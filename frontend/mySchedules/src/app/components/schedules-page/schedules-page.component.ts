@@ -82,7 +82,6 @@ export class SchedulesPageComponent implements OnInit{
       this.getShift();
     });
 
-    this.requestedShifts('', '')
   }
   
   getDatesInRange(): Date[] {
@@ -164,6 +163,12 @@ export class SchedulesPageComponent implements OnInit{
       },
       error => console.error(error)
     );
+    let shiftId,userName
+    this.shifts.forEach(ele =>{
+      shiftId = ele.shift_id;
+      userName = ele.user;
+    })
+    this.requestedShifts(shiftId, userName)
   }
   
   getEmployeesByShiftId(shiftId: number): void {
