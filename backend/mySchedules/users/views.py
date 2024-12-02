@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
-from users.models import User, UniqueShift, Shift, Pickup
+from users.models import User, UniqueShift, Shift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -273,22 +273,13 @@ def pickupShift_view(request):
             except User.DoesNotExist:
                 return JsonResponse({"error": "Employee not found."}, status=404)
             
-            shift_obj, created = Shift.objects.get_or_create(
+            shift_obj = Shift.objects.create(
                 shift_id = shift_obj,
                 employee = employee_obj,
-                defaults={'status': 'Request'}  # Only used when creating a new object
+                status = "Pending"
             )
 
-            Pickup.objects.create(
-                shift=shift_obj,
-                employee=employee_obj,
-                defaults={'request_status': 'Request'}
-            )
-
-            if not created:
-                return JsonResponse({"message": "shift pickup request already exists."}, status=400)
-            else:
-                return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
+            return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
 
         except Exception as e:
             print("Exception:", e)
@@ -307,14 +298,25 @@ def get_shift_requests_view(request):
                 return JsonResponse({"error": "Shift ID is required."}, status=400)
 
             req_shift_id = int(req_shift_id)
-            # Get all requests for the given shift ID
-            shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Request")
+            
+            shift_status = 0
+            # check if shift status is approved to any user or not
+            if Shift.objects.filter(shift_id=req_shift_id, status="Approved").exists():
+                shift_status = 1
+            
+            emp = Shift.objects.get(shift_id=req_shift_id, status="Approved")
 
-            # Prepare the data to return
-            requests_data = [
-                {"username": shift.employee.username, "shift_request_id": shift.pk}
+            # Get all requests for the given shift ID
+            if shift_status == 0:
+                shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Request")
+                requests_data = [
+                {"username": shift.employee.username, "shift_request_id": shift.pk, "shift_status": shift_status}
                 for shift in shift_requests
-            ]
+                ]
+            else:
+                requests_data = {"username":emp.employee.username, "shift_request_id": emp.pk, "shift_status": shift_status}
+            
+            # Prepare the data to return            
 
             return JsonResponse({"requests": requests_data}, status=200)
 
