@@ -9,7 +9,7 @@ import json
 from django.http import JsonResponse
 from django.utils.dateparse import parse_date
 from datetime import timedelta
-from users.models import User, UniqueShift, Shift
+from users.models import Pickup, User, UniqueShift, Shift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -274,13 +274,25 @@ def pickupShift_view(request):
             except User.DoesNotExist:
                 return JsonResponse({"error": "Employee not found."}, status=404)
             
-            shift_obj = Shift.objects.create(
+            not_unique_shift_obj, created = Shift.objects.get_or_create(
                 shift_id = shift_obj,
                 employee = employee_obj,
-                status = "Pending"
+                defaults={'status': "Request"}
             )
 
+            if not created:
+                return JsonResponse({"message": "shift pickup request already exists."}, status=400)
+            
+            Pickup.objects.create(
+                shift=shift_obj,
+                employee=employee_obj,
+                defaults={'request_status': 'Request'}
+            )
+            
+            
             return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
+
+            
 
         except Exception as e:
             print("Exception:", e)
