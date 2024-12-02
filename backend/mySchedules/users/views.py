@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
-from users.models import User, UniqueShift
+from users.models import User, UniqueShift, Shift
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -88,6 +88,7 @@ def register(request):
     # form = UserRegisterForm()
 
     # return render(request, 'users/register.html', {'form': form })
+
 @csrf_exempt
 def login_view(request):
     if request.method == "POST":
@@ -110,7 +111,7 @@ def login_view(request):
                     "number": 0
                 }
                 login(request, user)
-                paramsDict['message'] = "Login successfull"
+                paramsDict['message'] = "Login successful"
                 
 
                 if user.role == 'manager':
@@ -142,6 +143,7 @@ def login_view(request):
     # form = LoginForm()
 
     # return render(request, 'users/login.html', {'form': form})
+
 @csrf_exempt
 def logout_view(request):
     if request.method == "POST":
@@ -251,6 +253,115 @@ def getShifts_view(request):
     
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
+@csrf_exempt
+def pickupShift_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        employee_username = data.get("username")
+        shift_id = int(data.get("shift_id"))
+
+        try:
+            # Get the related objects
+            try:
+                shift_obj = UniqueShift.objects.get(pk=shift_id)
+            except UniqueShift.DoesNotExist:
+                return JsonResponse({"error": "Shift not found."}, status=404)
+
+            try:
+                employee_obj = User.objects.get(pk=employee_username)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Employee not found."}, status=404)
+            
+            shift_obj = Shift.objects.create(
+                shift_id = shift_obj,
+                employee = employee_obj,
+                status = "Pending"
+            )
+
+            return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
+
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+        
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+        
+@csrf_exempt
+def get_shift_requests_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            req_shift_id = int(data.get("shift_id"))
+
+            if not req_shift_id:
+                return JsonResponse({"error": "Shift ID is required."}, status=400)
+
+            req_shift_id = int(req_shift_id)
+            
+            shift_status = 0
+            # check if shift status is approved to any user or not
+            if Shift.objects.filter(shift_id=req_shift_id, status="Approved").exists():
+                shift_status = 1
+            
+            emp = Shift.objects.get(shift_id=req_shift_id, status="Approved")
+
+            # Get all requests for the given shift ID
+            if shift_status == 0:
+                shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Request")
+                requests_data = [
+                {"username": shift.employee.username, "shift_request_id": shift.pk, "shift_status": shift_status}
+                for shift in shift_requests
+                ]
+            else:
+                requests_data = {"username":emp.employee.username, "shift_request_id": emp.pk, "shift_status": shift_status}
+            
+            # Prepare the data to return            
+
+            return JsonResponse({"requests": requests_data}, status=200)
+
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+    
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
+@csrf_exempt
+def approve_shift_request_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            shift_request_id = data.get("shift_request_id")
+            employee_id = data.get("employee_id")
+
+            print(data)
+
+            if not shift_request_id or not employee_id:
+                return JsonResponse({"error": "Shift request ID and employee ID is required."}, status=400)
+            
+            shift_request_id = int(shift_request_id)
+            
+
+            # Get the shift request object
+            try:
+                # shift_obj = Shift.objects.filter(shift_id=shift_request_id)
+                # employee_obj = User.objects.filter(username=employee_id)
+                approved_request = Shift.objects.filter(shift_id=shift_request_id, employee=employee_id)
+            except Shift.DoesNotExist:
+                return JsonResponse({"error": "Shift request not found or already processed."}, status=404)
+
+            # Update the approved request status to "approved"
+            approved_request.update(status='Approved')
+            Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).update(status='Denied')
+
+            return JsonResponse({"message": "Shift request approved successfully. Other requests declined."}, status=200)
+
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+            
 
 @login_required
 def home(request):

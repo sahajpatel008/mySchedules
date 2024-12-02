@@ -1,0 +1,19 @@
+<div class="shift-action-container">
+  <h2>Shift Requests</h2>
+  <div *ngIf="users && users.length > 0; else noUsers">
+    <ul class="user-list">
+      <li *ngFor="let user of users" class="user-item">
+        <span>{{ user }}</span>
+        <button mat-raised-button color="primary" (click)="approveUser(user)">Approve</button>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #noUsers>
+    <p>No users have requested this shift.</p>
+  </ng-template>
+
+  <div class="actions">
+    <button mat-raised-button color="warn" (click)="close()">Close</button>
+  </div>
+</div>

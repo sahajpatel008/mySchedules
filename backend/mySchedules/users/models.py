@@ -30,3 +30,52 @@ class UniqueShift(models.Model):
 
     def __str__(self):
         return f"Shift {self.shift_id} at {self.location} on {self.date}"
+
+
+# Shift model
+class Shift(models.Model):
+    STATUS_CHOICES = [
+        ('New', 'New'),
+        ('Request', 'Request'),
+        ('Swap Request', 'Swap Request'),
+        ('Approved', 'Approved'),
+        ('Declined', 'Declined'),
+        ('Completed', 'Completed'),
+        ('Release', 'Release'),
+    ]
+    shift_id = models.ForeignKey(UniqueShift, on_delete=models.CASCADE)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['shift_id', 'employee'], name='unique_normalShift_employee')
+        ]
+        
+        # Use this as the logical primary key for ordering or queries
+        unique_together = ('shift_id', 'employee')
+
+    def __str__(self):
+        return f"Shift {self.shift_id} for Employee {self.employee}"
+
+
+# Pickup model
+class Pickup(models.Model):
+    REQUEST_STATUS_CHOICES = [
+        ('Approved', 'Approved'),
+        ('Request', 'Request'),
+        ('Declined', 'Declined'),
+    ]
+
+    shift = models.ForeignKey(UniqueShift, on_delete=models.CASCADE)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    request_status = models.CharField(max_length=10, choices=REQUEST_STATUS_CHOICES)
+
+    class Meta:
+        # Enforce the combination of shift and employee to be unique
+        constraints = [
+            models.UniqueConstraint(fields=['shift', 'employee'], name='unique_pickupShift_employee')
+        ]
+
+    def __str__(self):
+        return f"Pickup {self.shift_id} by Employee {self.employee}"

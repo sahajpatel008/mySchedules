@@ -22,6 +22,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
 import { UsersDashboardComponent } from './components/users-dashboard/users-dashboard.component';
+import { ViewShiftsActionBoxComponent } from './components/schedules-page/view-shifts-action-box/view-shifts-action-box.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { UsersDashboardComponent } from './components/users-dashboard/users-dash
     SchedulesPageComponent,
     ShiftsActionBoxComponent,
     SignUpPageComponent,
-    UsersDashboardComponent
+    UsersDashboardComponent,
+    ViewShiftsActionBoxComponent
   ],
   imports: [
     BrowserModule,
