@@ -208,8 +208,8 @@ def getShifts_view(request):
         try:
             # Retrieve the start_date and end_date from the query parameters
             print(request.GET)
-            start_date_str = int(request.GET.get('start_date')[0])  # e.g., "2024-11-01"
-            end_date_str = int(request.GET.get('end_date')[0])      # e.g., "2024-11-30"
+            start_date_str = int(request.GET.get('start_date'))/1000  # e.g., "2024-11-01"
+            end_date_str = int(request.GET.get('end_date'))/1000      # e.g., "2024-11-30"
             # print("Idhar")            
             
             # Validate if both start_date and end_date are provided
@@ -217,7 +217,7 @@ def getShifts_view(request):
                 return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
             # print("Udhar")
             # Convert the date strings into date objects
-            # print(start_date_str, type(start_date_str))
+            print(start_date_str, type(start_date_str))
             start_date = datetime.datetime.fromtimestamp(start_date_str).date()
             end_date = datetime.datetime.fromtimestamp(end_date_str).date()
             # print("Kidhar")
