@@ -113,13 +113,16 @@ def login_view(request):
                 }
                 login(request, user)
                 paramsDict['message'] = "Login successful"
-                
+                paramsDict['username'] = username
 
                 if user.role == 'manager':
+                    
                     number = random.randint(1, 1000000)
                     paramsDict['number'] = number
+                    paramsDict['user'] = 'manager'
                     return JsonResponse(paramsDict, status=200)
-                    
+                
+                paramsDict['user'] = 'employee'
                 return JsonResponse(paramsDict, status=200)
                 return JsonResponse({"message": "Login successful."}, status=200)
             else:

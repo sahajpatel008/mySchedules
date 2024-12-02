@@ -35,7 +35,7 @@ export class LoginPageComponent {
   hide = true;
   
   onLogin(){
-    this.router.navigate(['/schedulesPage']);
+    // this.router.navigate(['/schedulesPage']);
 
     if (this.registerForm.valid) {
       const apiUrl = ' http://127.0.0.1:8000/users/login/';
@@ -44,19 +44,27 @@ export class LoginPageComponent {
       const body = JSON.stringify(this.registerForm.value);
 
       this.http.post(apiUrl, body, { headers }).subscribe(
-        response => console.log(response),
-        error => console.error(error)
+        (response: any) => {
+          console.log(response);
+          console.log(this.registerForm.value)
+          let username;
+          this.registerForm.value.forEach((element: any) => {
+            
+            username = element.user;
+          });
+          console.log(username)
+          console.log(username);
+          if (username === 'manager') {
+            this.router.navigate(['/SchedulesPageComponent']); // Route to manager path
+          } else {
+            this.router.navigate(['/UsersDashboardComponent']); // Route to employee path
+          }
+        },
+        (error) => {
+          console.error(error)
+        }
       );
-      console.log(this.registerForm.value)
-      const username = this.registerForm.value.user;
-      console.log(username)
-      if (username === 'manager') {
-        this.router.navigate(['/SchedulesPageComponent']); // Route to manager path
-      } else if (username === 'employee') {
-        this.router.navigate(['/UsersDashboardComponent']); // Route to employee path
-      } else {
-        alert('Invalid credentials! Please try again.');
-      }
+
     }
   }
 }

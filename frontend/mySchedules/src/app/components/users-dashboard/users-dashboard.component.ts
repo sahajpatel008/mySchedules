@@ -114,13 +114,18 @@ export class UsersDashboardComponent {
       (response: any) => {
         this.availableShifts = response.shifts; // Assuming the backend returns a list of shifts
         console.log(this.availableShifts)
-        this.shiftId = this.availableShifts.shift_id
-        this.user = this.availableShifts.user
+        
+        this.availableShifts.forEach((element: any) => {
+          this.shiftId = element.shift_id
+          this.user = element.user
+        });
       },
       error => console.error(error)
     );
   }
   shiftPickUp(){
+    console.log(this.shiftId)
+
     const dialogRef = this.dialog.open(PickUpShiftsComponent, {
       panelClass: 'custom-modalbox', 
       height: '60vh',

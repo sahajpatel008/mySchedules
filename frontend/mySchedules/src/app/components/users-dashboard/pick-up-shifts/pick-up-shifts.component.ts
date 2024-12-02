@@ -17,7 +17,8 @@ export class PickUpShiftsComponent {
     private http: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.shiftId = data.shiftId;
+    console.log(data)
+    this.shiftId = data.shift_id;
     this.user = data.user;
   }
   
@@ -25,10 +26,10 @@ export class PickUpShiftsComponent {
     this.dialogRef.close(this.params);
   }
   requestPickUp(){
-    const apiUrl = `http://127.0.0.1:8000/users/pickUpshifts/`; // Example API endpoint
+    const apiUrl = `http://127.0.0.1:8000/users/pickupShift/`; // Example API endpoint
     const headers = { 'Content-Type': 'application/json' };
-    const body = { username: this.user,shift_id: this.shiftId }; // Send the shift ID in JSON format
-
+    const body = { username: 'test8', shift_id: this.shiftId }; // Send the shift ID in JSON format
+    console.log(body)
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
         console.log(response)
