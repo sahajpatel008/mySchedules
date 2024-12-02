@@ -207,21 +207,21 @@ def getShifts_view(request):
     if request.method == "GET":
         try:
             # Retrieve the start_date and end_date from the query parameters
-            # print(request.GET)
-            start_date_str = request.GET.get('start_date')  # e.g., "2024-11-01"
-            end_date_str = request.GET.get('end_date')      # e.g., "2024-11-30"
-            
+            print(request.GET)
+            start_date_str = int(request.GET.get('start_date')[0])  # e.g., "2024-11-01"
+            end_date_str = int(request.GET.get('end_date')[0])      # e.g., "2024-11-30"
+            # print("Idhar")            
             
             # Validate if both start_date and end_date are provided
             if not start_date_str or not end_date_str:
                 return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
-
+            # print("Udhar")
             # Convert the date strings into date objects
             # print(start_date_str, type(start_date_str))
-            start_date = datetime.datetime.fromtimestamp(int(float(start_date_str))).date()
-            end_date = datetime.datetime.fromtimestamp(int(float(end_date_str))).date()
-
-            # print(start_date, end_date)
+            start_date = datetime.datetime.fromtimestamp(start_date_str).date()
+            end_date = datetime.datetime.fromtimestamp(end_date_str).date()
+            # print("Kidhar")
+            print(start_date, end_date)
 
             # # Filter shifts within the date range and order them by date in ascending order
             # shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
