@@ -220,15 +220,15 @@ export class SchedulesPageComponent implements OnInit{
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
-      location: shift,
-      userName: this.userNameFromStorage,
-      employee_id: this.employee_id
+      // location: shift,
+      // userName: this.userNameFromStorage,
+      // employee_id: this.employee_id
     };
 
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
-        console.log(this.shiftsAsPerLocation)
+        console.log(response.data)
       },
       error => console.error(error)
     );

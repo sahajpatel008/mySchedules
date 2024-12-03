@@ -9,7 +9,7 @@ import json
 from django.http import JsonResponse
 from django.utils.dateparse import parse_date
 from datetime import timedelta
-from users.models import User, UniqueShift, Shift, Pickup, Approval
+from users.models import User, UniqueShift, Shift, Pickup, Approval, Locations
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -493,13 +493,10 @@ def getshifts_allusers_view(request):
             # Extract data from the request
             # data = json.loads(request.body)
             # print(data)
-            print(request.GET)
-            location = request.GET.get('location')
-            print(location)
-            print(request.GET.get('start_date'))
+            print("Start Date: ",request.GET.get('start_date'))
             start_date_str = int(float(request.GET.get('start_date'))/1000)  # e.g., "2024-11-01"
             end_date_str = int(float(request.GET.get('end_date'))/1000) 
-            print(start_date_str)
+            print("Start Date String: ",start_date_str)
             # format_string = "%Y-%m-%d"
             # start_date = datetime.datetime.strptime(start_date, format_string)
             start_date = datetime.datetime.fromtimestamp(start_date_str)
@@ -509,7 +506,7 @@ def getshifts_allusers_view(request):
             print(start_date, type(start_date))
             
 
-            if not all([start_date, end_date, location]):
+            if not all([start_date, end_date]):
                 return JsonResponse({"error": "Missing required fields: start_date, end_date, or location"}, status=400)
 
             # Query all shifts in the range and location
@@ -519,54 +516,63 @@ def getshifts_allusers_view(request):
             #     location = location
             # )
 
-            # print("lol idhar ",shifts)
-            # Get all users who have been assigned at least one shift in the location and range
-            employees = User.objects.filter(role="employee")
-            print(employees)
-            # Prepare a response dictionary where each user is a key
-            response_data = {}
             all_dates = []
             current_date = start_date
             while current_date <= end_date:
-                all_dates.append(current_date)
+                all_dates.append(current_date.date())
                 current_date += timedelta(days=1)
-            # print("kidhar ",employees)
-            for user in employees:
-                user_shifts = UniqueShift.objects.filter(
-                    date__gte = start_date, 
-                    date__lte = end_date,
-                    location = location,
-                    employee_id=user
-                )
-                # print(user_shifts)
-                # Group shifts by date, allowing multiple shifts on the same day
-                shifts_by_date = {}
-                for shift in user_shifts:
-                    if shift.date not in shifts_by_date:
-                        # print("Jana phut")
-                        shifts_by_date[shift.date] = []
-                    shifts_by_date[shift.date].append({
-                        "shift_id": shift.shift_id,
-                        "start_time": shift.start_time.strftime("%I:%M %p"),
-                        "end_time": shift.end_time.strftime("%I:%M %p")
-                    })
-                    # print("Yeh dekho ",shifts_by_date)
 
-                # Add all dates to the response, including empty ones
-                # print("Saari dates", all_dates)
-                user_shifts_with_empty_dates = []
-                for date in all_dates:
-                    date = date.date()
-                    if date in shifts_by_date:
-                        user_shifts_with_empty_dates.append(shifts_by_date[date])
-                    else:
-                        user_shifts_with_empty_dates.append([])  # Empty list for dates with no shifts
-                # print(user_shifts_with_empty_dates)
-                response_data[user.username] = user_shifts_with_empty_dates
+            # Get all users who have been assigned at least one shift in the location and range
+            # Fetch all employees
+            employees = User.objects.filter(role="employee")
+
+            # Fetch all locations
+            locations = Locations.objects.all()
+
+            # Prepare the response data structure
+            response_data = {}
+            for location_obj in locations:
+                location = location_obj.location  # Get the location name
+                # Generate all dates in the range
+
+                location_data = {}
+                
+                # Process shifts for each employee in the location
+                for user in employees:
+                    user_shifts = UniqueShift.objects.filter(
+                        date__gte=start_date,
+                        date__lte=end_date,
+                        location=location,
+                        employee=user
+                    )
+
+                    # Group shifts by date, allowing multiple shifts on the same day
+                    shifts_by_date = {}
+                    for shift in user_shifts:
+                        if shift.date not in shifts_by_date:
+                            shifts_by_date[shift.date] = []
+                        shifts_by_date[shift.date].append({
+                            "shift_id": shift.shift_id,
+                            "start_time": shift.start_time.strftime("%I:%M %p"),
+                            "end_time": shift.end_time.strftime("%I:%M %p")
+                        })
+
+                    # Add all dates, including empty ones, to the user data
+                    user_shifts_with_empty_dates = []
+                    for date in all_dates:
+                        if date in shifts_by_date:
+                            user_shifts_with_empty_dates.append(shifts_by_date[date])
+                        else:
+                            user_shifts_with_empty_dates.append([])
+
+                    # Add user's shift data to the location's data
+                    location_data[user.username] = user_shifts_with_empty_dates
+
+                # Add location's data to the response
+                response_data[location] = {"data": location_data}
             print(response_data)
-            # for r in response_data.keys():
-            #     print(response_data[r])
-            return JsonResponse({"data": response_data}, status=201)
+            # Return the JSON response
+            return JsonResponse({"data":response_data}, status=200)
 
         except Exception as e:
             print("Error:", e)
