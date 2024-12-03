@@ -410,9 +410,9 @@ def approve_shift_request_view(request):
             data = json.loads(request.body)
             shift_request_id = data.get("shift_request_id")
             employee_id = data.get("employee_id")
-            manager_id = data.get('userName')
+            manager_id = data.get('username')
 
-            print(data)
+            print(shift_request_id, employee_id, manager_id)
 
             if not shift_request_id or not employee_id:
                 return JsonResponse({"error": "Shift request ID and employee ID is required."}, status=400)
