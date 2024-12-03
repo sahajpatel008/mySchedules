@@ -73,6 +73,8 @@
     display: flex;
     justify-content: space-between;
     background: #fff;
+    position: sticky;
+    z-index: 10;
 }
 .shiftsAsPerLocClass{
     width:170px;
