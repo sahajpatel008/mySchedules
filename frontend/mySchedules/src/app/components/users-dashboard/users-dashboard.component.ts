@@ -15,6 +15,7 @@ export class UsersDashboardComponent {
   users: any;
   locations:any;
   availableShifts: any;
+  shiftsAsPerStatus: any;
   panelOpenState = false;
   params: any;
   shiftId: any;
@@ -23,6 +24,7 @@ export class UsersDashboardComponent {
   userNameFromStorage: string | null = null;
   shiftsAsPerLocation:any;
   employee_id: any;
+  isApproved: boolean = false;
 
   constructor(public dialog: MatDialog, private http: HttpClient,private router: Router) {
     // Initialize the range form group with null values
@@ -65,6 +67,7 @@ export class UsersDashboardComponent {
       console.error('There was a problem with the fetch operation:', error);
     });
     this.getShift();
+    this.getShiftsAsPerStatus();
     this.range.valueChanges.subscribe(() => {
       this.getShift();
     });
@@ -117,6 +120,37 @@ export class UsersDashboardComponent {
           } 
         });
         this.viewShiftsAsPerLocations(shiftLocation);
+      },
+      error => console.error(error)
+    );
+  }
+
+  getShiftsAsPerStatus(){
+    const apiUrl = '  http://127.0.0.1:8000/users/getMyShifts/';
+    const headers = { 'Content-Type': 'application/json' };
+
+    this.params = {
+      start_date: this.range.value.start?.getTime(),  // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime(),
+      userName: this.userNameFromStorage
+    }
+
+    let shiftStatus: any;
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        this.shiftsAsPerStatus = response.data; // Assuming the backend returns a list of shifts
+        this.shiftsAsPerStatus.forEach((element: any) => {
+
+          if (element.data.length > 0) {
+            element.data.forEach((shift: any) => {
+              shiftStatus = shift.status;    
+            });
+          } 
+        });
+        console.log('shiftStatus: ',shiftStatus)
+        if(shiftStatus == 'approved'){
+          this.isApproved = true;
+        }
       },
       error => console.error(error)
     );

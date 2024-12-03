@@ -27,16 +27,18 @@
               {{ date | date: 'MM/dd/yyyy' }}
             </li>
           </ul>
-          <ul class="usersData" style="display:flex;">
-            <li *ngFor="let dateEntry of availableShifts" class="usersClass">  
-              <ul>
-                <li *ngFor="let shift of dateEntry.data" class="shiftsContainer">
-                  <strong>Location:</strong> {{ shift.location }}<br>
-                  <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
-                </li>
-              </ul>
-            </li>
-          </ul>          
+          <ng-template [ngIf]="shiftsAsPerStatus">
+            <ul class="usersData" style="display:flex;">
+              <li *ngFor="let dateEntry of shiftsAsPerStatus" class="usersClass">  
+                <ul>
+                  <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" [ngStyle]="{'background-color': isApproved ? '#dcffe8' : '#f3f3f3', 'border-color': isApproved ? '#83ff7f' : '#d7d7d7' }">
+                    <strong>Location:</strong> {{ shift.location }}<br>
+                    <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
+                  </li>
+                </ul>
+              </li>
+            </ul>  
+          </ng-template>        
         </div>
       </div>
 
@@ -100,40 +102,6 @@
           </div>
         </mat-expansion-panel>
       </ng-template>
-
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" 
-      *ngFor="let location of getKeys(shiftsAsPerLocation)" style="padding: 1%;">
-         <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{location}}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        
-        <div class="displayDates">
-          <ul class="dates">
-            <li class="dateClass"><span style="display: none;">hdfh</span></li>
-            <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-          </ul>
-
-          <div *ngIf="shiftsAsPerLocation[location]">
-            <!-- Loop through each user -->
-            <ul *ngFor="let user of getKeys(shiftsAsPerLocation[location])" 
-                style="display: flex; padding: 0; list-style: none;margin:0">
-              <p class="shiftsAsPerLocClass" style="font-weight: bold;width: 170px">{{ user }}</p>
-  
-              <!-- Render shifts for each date -->
-              <li *ngFor="let shiftsForDay of shiftsAsPerLocation[location][user]" 
-                  style="width: 170px; border: 1px solid #ccc;">
-                <div *ngFor="let shift of shiftsForDay" class="shiftsContainer">
-                  <p><strong>Shift ID:</strong> {{ shift.shift_id }}</p>
-                  <p><strong>Start Time:</strong> {{ shift.start_time }}</p>
-                  <p><strong>End Time:</strong> {{ shift.end_time }}</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </mat-expansion-panel>
     </mat-accordion>
   </div>
 
