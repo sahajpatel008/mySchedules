@@ -1,38 +1,110 @@
-.view-shifts-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  h2 {
-    margin-bottom: 20px;
-    color: #3f51b5;
-  }
-  
-  .requests-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .requests-list li {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .requests-list li span {
-    display: block;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  
-  .actions {
-    margin-top: 20px;
-    text-align: right;
-  }
-  
-  button {
-    font-weight: bold;
-  }
-  
+/* General Styles */
+.shift-action-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.shift-action-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.shift-action-container .no-users-message {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+/* Approved Shift Section */
+.approved-shift .approved-user-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.approved-shift .approved-user-item {
+  background-color: #e6ffe6;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #c4f0c4;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Pending Shift Section */
+.pending-shift .user-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pending-shift .user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.pending-shift .user-item:hover {
+  background-color: #f1f1f1;
+}
+
+.pending-shift .user-item span {
+  font-size: 1rem;
+  color: #333;
+}
+
+.pending-shift .user-item button {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Actions Section */
+.actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.actions button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Button Colors */
+button[mat-raised-button][color="primary"] {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button[mat-raised-button][color="primary"]:hover {
+  background-color: #0056b3;
+}
+
+button[mat-raised-button][color="warn"] {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+button[mat-raised-button][color="warn"]:hover {
+  background-color: #a71d2a;
+}

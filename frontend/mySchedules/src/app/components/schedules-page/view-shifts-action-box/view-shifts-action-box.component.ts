@@ -39,8 +39,18 @@ export class ViewShiftsActionBoxComponent implements OnInit {
 
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
-        this.users = response.shift.employee.username || [];
-        this.shiftstatus = response.shift.employeee.shift_status;
+        console.log(response);
+        if (response.requests && response.requests.data) {
+          // Map usernames into an array
+          this.users = response.requests.data.map((item: any) => item.username);
+
+          // Map shift_status into an array
+          this.shiftstatus = response.requests.data[0].shift_status;
+        } else {
+          this.users = [];
+          this.shiftstatus = null;
+        }
+        console.log(this.users,this.shiftstatus);
       },
       error => {
         console.error('Error fetching shift requests:', error);
