@@ -202,7 +202,7 @@ export class SchedulesPageComponent implements OnInit{
       employee_id: this.employee_id
     };
 
-    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+    this.http.post(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shifts = response.shifts; // Assuming the backend returns a list of shifts
       },
