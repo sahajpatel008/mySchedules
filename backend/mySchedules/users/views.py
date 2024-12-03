@@ -9,7 +9,7 @@ import json
 from django.http import JsonResponse
 from django.utils.dateparse import parse_date
 from datetime import timedelta
-from users.models import Pickup, User, UniqueShift, Shift
+from users.models import User, UniqueShift, Shift, Pickup, Approval
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -400,6 +400,7 @@ def approve_shift_request_view(request):
             data = json.loads(request.body)
             shift_request_id = data.get("shift_request_id")
             employee_id = data.get("employee_id")
+            manager_id = data.get('manager_id')
 
             print(data)
 
@@ -407,19 +408,45 @@ def approve_shift_request_view(request):
                 return JsonResponse({"error": "Shift request ID and employee ID is required."}, status=400)
             
             shift_request_id = int(shift_request_id)
+
+            try:
+                shift_obj = UniqueShift.objects.get(pk=shift_request_id)
+            except UniqueShift.DoesNotExist:
+                return JsonResponse({"error": "Shift not found."}, status=404)
             
 
             # Get the shift request object
             try:
-                # shift_obj = Shift.objects.filter(shift_id=shift_request_id)
-                # employee_obj = User.objects.filter(username=employee_id)
                 approved_request = Shift.objects.filter(shift_id=shift_request_id, employee=employee_id)
             except Shift.DoesNotExist:
                 return JsonResponse({"error": "Shift request not found or already processed."}, status=404)
 
             # Update the approved request status to "approved"
             approved_request.update(status='Approved')
-            Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).update(status='Denied')
+            # Update the approval status for the manager in the Approval model
+            Approval.objects.create(shift=shift_request_id, manager=manager_id, approval_status='Approved')
+           
+            # Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).update(status='Denied') #this works
+
+            # Deny all other shift requests for the same shift_id except the current employee
+            affected_shifts = Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id)
+
+            # Update their status to 'Denied'
+            affected_shifts.update(status='Denied')
+
+            # Create Approval rows for the affected shifts
+            
+            approval_entries = [
+                Approval(
+                    shift=shift_obj, 
+                    manager=manager_id,  # Replace `current_manager` with the manager responsible for the approval
+                    approval_status='Declined'
+                )
+                for shift in affected_shifts
+            ]
+
+            # Bulk create the Approval entries for better performance
+            Approval.objects.bulk_create(approval_entries)
 
             return JsonResponse({"message": "Shift request approved successfully. Other requests declined."}, status=200)
 

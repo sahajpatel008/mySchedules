@@ -58,6 +58,13 @@ class Shift(models.Model):
     def __str__(self):
         return f"Shift {self.shift_id} for Employee {self.employee}"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update Approval model based on shift status
+        if self.status == 'Approved':
+            Approval.objects.filter(shift=self.shift_id).update(approval_status='Approved')
+        elif self.status == 'Declined':
+            Approval.objects.filter(shift=self.shift_id).update(approval_status='Declined')
 
 # Pickup model
 class Pickup(models.Model):
