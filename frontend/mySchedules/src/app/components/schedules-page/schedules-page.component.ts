@@ -28,7 +28,7 @@ export class SchedulesPageComponent implements OnInit{
   shiftDataByDate: { [key: string]: any[] } = {};
   shiftData:any;
   shiftsAsPerLocation:any;
-  usernameStorage: string | null = null;
+  userNameFromStorage: string | null = null;
 
   constructor(public dialog: MatDialog,
     private http: HttpClient,
@@ -79,12 +79,10 @@ export class SchedulesPageComponent implements OnInit{
 
     this.getShift();
     this.range.valueChanges.subscribe(() => {
-      console.log(1)
       this.getShift();
     });
 
-    this.usernameStorage = localStorage.getItem('username');
-    console.log('Username:', this.usernameStorage);
+    this.userNameFromStorage = localStorage.getItem('username');
   }
   
   getDatesInRange(): Date[] {
@@ -161,47 +159,22 @@ export class SchedulesPageComponent implements OnInit{
     
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        // console.log(response)
         this.shifts = response.data; // Assuming the backend returns a list of shifts
-        console.log(this.shifts)
-
         this.shifts.forEach((entry: any) => {
-          console.log(`Date: ${entry.date}`);
           let shiftId, userName;
           // Check if there are any shifts for the current date
           if (entry.data.length > 0) {
             entry.data.forEach((shift: any) => {
-    this.viewShiftsAsPerLocations(shift.location);
+              this.viewShiftsAsPerLocations(shift.location);
 
               shiftId = shift.shift_id;
               userName = shift.user;
             });
-          } else {
-            console.log("No shifts for this date.");
-          }
-        // let shiftId,userName
-        // console.log(this.shifts);
-        // this.shifts.forEach((ele: any) =>{
-        //   console.log(ele.data);
-        //   ele.data.forEach((element: any) =>{
-        //     element.forEach((element1: any) =>{
-        //       shiftId = element1.shift_id;
-        //       userName = element1.user;
-        //     });
-        //   });
-          
+          } 
         })
-        // console.log(shiftId);
-        // console.log(userName);
-        // this.requestedShifts(shiftId, userName)
-        // // console.log(this.shifts)
-        // this.shifts.forEach((element: any) => {
-        //   // console.log(element.date)
-        // });
       },
       error => console.error(error)
     );
-    
   }
   
   getEmployeesByShiftId(shiftId: number): void {

@@ -18,7 +18,12 @@ export class UsersDashboardComponent {
   panelOpenState = false;
   params: any;
   shiftId: any;
+  userName: any;
   user: any;
+  userNameFromStorage: string | null = null;
+  shiftsAsPerLocation:any;
+
+
   constructor(public dialog: MatDialog, private http: HttpClient,private router: Router) {
     // Initialize the range form group with null values
     this.range = new FormGroup({
@@ -63,6 +68,8 @@ export class UsersDashboardComponent {
     this.range.valueChanges.subscribe(() => {
       this.getShift();
     });
+    this.userNameFromStorage = localStorage.getItem('username');
+
   }
 
   // getDatesInRange(): Date[] {
@@ -109,30 +116,59 @@ export class UsersDashboardComponent {
       end_date: this.range.value.end?.getTime() 
     }
 
-    console.log(this.params)
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        console.log(response);
         this.availableShifts = response.data; // Assuming the backend returns a list of shifts
-        console.log(this.availableShifts)
-        
         this.availableShifts.forEach((element: any) => {
-          this.shiftId = element.shift_id
-          this.user = element.user
+
+          if (element.data.length > 0) {
+            element.data.forEach((shift: any) => {
+
+              this.viewShiftsAsPerLocations(shift.location);
+            
+              this.shiftId = shift.shift_id;
+              this.userName = shift.user;
+            });
+          } 
         });
       },
       error => console.error(error)
     );
   }
+
   shiftPickUp(){
-    console.log(this.shiftId)
+    console.log(this.shiftId,this.userName)
 
     const dialogRef = this.dialog.open(PickUpShiftsComponent, {
       panelClass: 'custom-modalbox', 
       height: '60vh',
       width: '60vw',
-      data: {"shift_id": this.shiftId, "username": this.user }
+      data: {"shift_id": this.shiftId, "username": this.userNameFromStorage }
     });
+  }
+
+  viewShiftsAsPerLocations(shift: any){
+    const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
+    const headers = { 'Content-Type': 'application/json' };
+    // console.log(shift);
+    this.params = {
+      start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime(),
+      location: shift,
+    };
+    // console.log(this.params)
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
+        console.log(this.shiftsAsPerLocation)
+      },
+      error => console.error(error)
+    );
+  }
+  getKeys(obj: any): string[] {
+    console.log(obj)
+    return Object.keys(obj); // Returns an array of keys, e.g., ['johndoe']
   }
 
   logOut(){
