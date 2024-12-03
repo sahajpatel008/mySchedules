@@ -11,23 +11,14 @@
               <input 
                 matInput 
                 [matDatepicker]="picker" 
+                [(ngModel)]="selectedDate" 
+                name="date"
                 (dateChange)="onDateChange($event)">
               <mat-hint>MM/DD/YYYY</mat-hint>
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
           </form>
-            <!-- <form>
-                <mat-form-field>
-                  <mat-label>user</mat-label>
-                  <mat-select [(ngModel)]="selectedValue" name="user">
-                    <mat-option *ngFor="let user of users" [value]="user.name">
-                      {{user.name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <p> Selected user: {{selectedValue}} </p>
-            </form> -->
             <form style="padding: 2%;">
                 <mat-form-field>
                   <mat-label>location</mat-label>
@@ -38,7 +29,7 @@
                   </mat-select>
                 </mat-form-field>
                 <!-- <p> Selected Location: {{selectedLocation}} </p> -->
-            </form>
+          </form>
         </div>
         <div>
           <mat-form-field appearance="fill" style="padding: 2%;">

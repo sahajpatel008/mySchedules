@@ -1,0 +1,44 @@
+.topDiv{
+    padding: 2% 3%;
+    box-shadow: 0px 7px 15px 0px rgba(192,192,194,0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .modal-card {
+    background-color: #ffffff; 
+    padding: 20px 40px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    text-align: center; 
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .modal-message {
+    margin: 0;
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    color: #4caf50;
+  }
+  
+  /* Add a fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  

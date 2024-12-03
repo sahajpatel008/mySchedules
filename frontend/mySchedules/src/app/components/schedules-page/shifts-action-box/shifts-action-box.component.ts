@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { ShiftCreatedModalComponent } from './shift-created-modal/shift-created-modal.component';
 
 @Component({
   selector: 'app-shifts-action-box',
@@ -15,55 +16,41 @@ export class ShiftsActionBoxComponent {
   data: any;
   date: any;
   times: string[] = [];
-  start_time: string = '';
-  end_time: string = '';
+  start_time: string | null = null;
+  end_time: string | null = null;
+  selectedDate: Date | null = null;
   params: any;
   durationInSeconds = 5;
   
   constructor(
     public dialogRef: MatDialogRef<ShiftsActionBoxComponent>,
     private http: HttpClient,
+    public dialog: MatDialog,
   ) {
     this.generateTimeOptions();
   }
 
   ngOnInit(): void{
-            //fetching data from json
-            fetch('./assets/data.json')
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok' + response.statusText);
-              }
-              return response.json();
-            })
-            .then(data => {
-              this.users = data.users;
-              this.locations = data.location;
-            })
-            .catch(error => {
-              console.error('There was a problem with the fetch operation:', error);
-            });
+      //fetching data from json
+      fetch('./assets/data.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.users = data.users;
+        this.locations = data.location;
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
 
-            //call api function
-            // this.getData();
   }
 
   onDateChange(event: any): void {
-    this.date = event.value; // This is the selected date
-    console.log('Selected Date:', this.date);
-  }
-
-  getData(): void {
-    const apiUrl = '';
-    this.http.get(apiUrl).subscribe(
-      (response) => {
-        this.data = response; // Handle the response here
-        console.log(this.data);
-      },
-      (error) => {
-        console.error('API call failed:', error); // Handle errors
-      }
-    );
+    this.date = event.value; 
   }
 
   generateTimeOptions(): void {
@@ -96,13 +83,26 @@ export class ShiftsActionBoxComponent {
       response => console.log(response),
       error => console.error(error)
     );
+    this.start_time = null;
+    this.end_time = null;
+    this.selectedDate = null;
+    this.selectedLocation = null;
   }
 
   closeDialog() {
     this.dialogRef.close(this.params);
   }
+
   create_close_dialog(){
     this.createShift();
-    // this.dialogRef.close(this.params);
+    const dialogRef = this.dialog.open(ShiftCreatedModalComponent, {
+      panelClass: 'custom-modalbox',
+      height: '10vh',
+      width: '20vw'
+    });
+
+    setTimeout(() => {
+      dialogRef.close();
+    }, 2000);
   }
 }
