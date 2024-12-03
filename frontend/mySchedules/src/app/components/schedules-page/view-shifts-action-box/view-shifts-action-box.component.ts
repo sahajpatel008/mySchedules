@@ -11,6 +11,7 @@ export class ViewShiftsActionBoxComponent implements OnInit {
   users: any[] = [];
   shiftRequests: any[] = [];
   status: any;
+  shiftstatus: any;
   shiftId: number | undefined;
 
   constructor(
@@ -39,6 +40,7 @@ export class ViewShiftsActionBoxComponent implements OnInit {
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
         this.users = response.shift.employee.username || [];
+        this.shiftstatus = response.shift.employeee.shift_status;
       },
       error => {
         console.error('Error fetching shift requests:', error);
