@@ -19,7 +19,7 @@ export class PickUpShiftsComponent {
   ) {
     console.log('modal data: ', data)
     this.shiftId = data.shift_id;
-    this.user = data.user;
+    this.user = data.username;
   }
   
   closeDialog() {
