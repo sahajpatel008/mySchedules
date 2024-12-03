@@ -73,67 +73,40 @@
   </mat-tab-group>
   
   
-  <div style="margin:2%">
+  <div style="margin:2%;height: 50%;overflow: auto;">
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" 
          *ngFor="let location of locations" style="padding: 1%;">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{location.loc}}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+         <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{location.loc}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="displayDates">
+          <ul class="dates">
+            <li class="dateClass"></li>
+            <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
+          </ul>
     
-    <div class="displayDates">
-      <ul class="dates">
-        <li class="dateClass"></li>
-        <li *ngFor="let date of getDatesInRange()" class="dateClass">{{ date | date: 'MM/dd/yyyy' }}</li>
-      </ul>
-      
-      <!-- <div style="display:flex">
-        <div>
-          <ul class="users">
-            <li *ngFor="let user of users" class="usersClass">{{user.name}}</li>
-          </ul>
+          <div *ngIf="shiftsAsPerLocation">
+            <ul *ngFor="let user of getKeys(shiftsAsPerLocation)" style="display: flex;margin: 0;">
+              <p  class="shiftsAsPerLocClass">{{ user }}</p> 
+              <li *ngFor="let day of shiftsAsPerLocation[user]" style="width: 170px;border: 1px solid #ccc">
+                <div>
+                  <div *ngFor="let shift of day" style="width: 170px;">
+                    <p><strong>Shift ID:</strong> {{ shift.shift_id }}</p>
+                    <p><strong>Start Time:</strong> {{ shift.start_time }}</p>
+                    <p><strong>End Time:</strong> {{ shift.end_time }}</p>
+                    <!-- <p><strong>Location:</strong> {{ shift.location }}</p>  -->
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <ul *ngFor="let user of users" class="usersData" style="display:flex">
-            <li *ngFor="let date of getDatesInRange()" class="usersClass" (click)="addShift(user)"></li>
-          </ul>
-        </div>
-      </div> -->
-      
-<div *ngIf="shiftsAsPerLocation">
-  <div *ngFor="let user of getKeys(shiftsAsPerLocation)">
-    <h2>User: {{ user }}</h2> <!-- Print the username -->
-
-    <div *ngFor="let day of shiftsAsPerLocation[user]">
-      <h3>Date: {{ day.date }}</h3>
-
-      <div>
-        <div *ngFor="let shift of day">
-
-          <p><strong>Shift ID:</strong> {{ shift.shift_id }}</p>
-          <p><strong>Start Time:</strong> {{ shift.start_time }}</p>
-          <p><strong>End Time:</strong> {{ shift.end_time }}</p>
-          <!-- <p><strong>Location:</strong> {{ shift.location }}</p>  -->
-        </div>
-      </div>
-
-      <!-- <ng-template #noShift>
-        <p>No shifts available for this date.</p>
-      </ng-template> -->
-    </div>
-  </div>
-</div>
-
-<div *ngIf="!shiftsAsPerLocation">
-  <p>No shift data available.</p>
-</div>
-
-    </div>
-  
-  </mat-expansion-panel>
-  </mat-accordion>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </div>
 

@@ -29,6 +29,7 @@ export class SchedulesPageComponent implements OnInit{
   shiftData:any;
   shiftsAsPerLocation:any;
   userNameFromStorage: string | null = null;
+  employee_id: any;
 
   constructor(public dialog: MatDialog,
     private http: HttpClient,
@@ -155,11 +156,13 @@ export class SchedulesPageComponent implements OnInit{
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
+      userName: this.userNameFromStorage
     };
     
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shifts = response.data; // Assuming the backend returns a list of shifts
+        
         this.shifts.forEach((entry: any) => {
           let shiftId, userName;
           // Check if there are any shifts for the current date
@@ -169,6 +172,7 @@ export class SchedulesPageComponent implements OnInit{
 
               shiftId = shift.shift_id;
               userName = shift.user;
+              this.employee_id = shift.employee_id;
             });
           } 
         })
@@ -185,6 +189,7 @@ export class SchedulesPageComponent implements OnInit{
       data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
     });
   }
+
   requestedShifts(shiftId: any, userName: any){
     const apiUrl = 'http://127.0.0.1:8000/users/getPickupRequests/';
     const headers = { 'Content-Type': 'application/json' };
@@ -192,8 +197,9 @@ export class SchedulesPageComponent implements OnInit{
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
-      userName,
-      shiftId
+      userName: this.userNameFromStorage,
+      shiftId,
+      employee_id: this.employee_id
     };
 
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
@@ -210,16 +216,17 @@ export class SchedulesPageComponent implements OnInit{
   viewShiftsAsPerLocations(shift: any){
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
     const headers = { 'Content-Type': 'application/json' };
-    // console.log(shift);
+
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
       location: shift,
+      userName: this.userNameFromStorage,
+      employee_id: this.employee_id
     };
-    // console.log(this.params)
+
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        console.log(response);
         this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)
       },
@@ -227,7 +234,6 @@ export class SchedulesPageComponent implements OnInit{
     );
   }
   getKeys(obj: any): string[] {
-    console.log(obj)
     return Object.keys(obj); // Returns an array of keys, e.g., ['johndoe']
   }
   

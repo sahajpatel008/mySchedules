@@ -21,19 +21,19 @@
     background: #e5e5e5;
     padding:1rem;
     border: 1px solid #ccc;
-    min-width: 170px;
-    height: 7vh;
-    display: flex;
+    width:170px;
+    height:7vh;
     justify-content: center;
     align-items: center;
+    display: flex;
 }
 .usersClass{
     border: 1px solid #e3e3e3;
     padding:1rem;
     list-style: none;
-    min-width:170px;
+    width:170px;
+    min-height:20vh;
     display: flex;
-    height: 7vh;
     justify-content: center;
     align-items: center;
 }
@@ -44,6 +44,13 @@
 .schedulesPageHeader{
     display: flex;
     justify-content: space-between;
+}
+.shiftsContainer{
+    background: aliceblue;
+    padding: 2% 5%;
+    border-left: 2px solid #91c8f8;
+    margin: 5% 1%;
+    font-size: 14px;
 }
 ::ng-deep .custom-modalbox .cdk-overlay-container {
     position: absolute;
@@ -62,4 +69,13 @@
     justify-content: end;
     background: #fff;
     z-index: 1;
+}
+.shiftsAsPerLocClass{
+    width:170px;
+    border: 1px solid #ccc;
+    margin: 0;
+    height: 7vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
