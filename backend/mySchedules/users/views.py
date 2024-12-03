@@ -569,7 +569,7 @@ def getshifts_allusers_view(request):
                     location_data[user.username] = user_shifts_with_empty_dates
 
                 # Add location's data to the response
-                response_data[location] = {"data": location_data}
+                response_data[location] = location_data
             print(response_data)
             # Return the JSON response
             return JsonResponse({"data":response_data}, status=200)

@@ -74,7 +74,7 @@
     width:170px;
     border: 1px solid #ccc;
     margin: 0;
-    height: 7vh;
+    min-height: 7vh;
     display: flex;
     justify-content: center;
     align-items: center;
