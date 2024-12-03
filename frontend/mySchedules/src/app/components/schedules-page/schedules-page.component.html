@@ -1,3 +1,8 @@
+<div class="header">
+  <h3 style="margin: 1%;">My Schedules</h3>
+  <button mat-raised-button (click)="logOut()" style="margin: 1%;"><mat-icon>power_settings_new</mat-icon></button>
+</div>
+
 <div style="overflow: auto;height: 100%;">
   <div class="schedulesPageHeader">
     <div style="padding:2%">
@@ -28,9 +33,6 @@
             </li>
           </ul>
           <ul class="usersData" style="display: flex;">
-            <span *ngIf="!shifts" style="display: flex;">
-              <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
-            </span>
             <li *ngFor="let dateEntry of shifts" class="usersClass">  
               <ul>
                 <li *ngFor="let shift of dateEntry.data" class="shiftsContainer">
@@ -54,9 +56,6 @@
           </ul>
           
           <ul class="usersData" style="display: flex;">
-            <span *ngIf="!shifts" style="display: flex;">
-              <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
-            </span>
             <li *ngFor="let dateEntry of shifts" class="usersClass">  
               <ul>
                 <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="getEmployeesByShiftId(shift.shift_id)">
@@ -109,9 +108,4 @@
     </mat-accordion>
   </div>
 </div>
-
-<div class="footer">
-  <button mat-raised-button (click)="logOut()" style="margin: 1%;">Logout</button>
-</div>
-
   
