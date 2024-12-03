@@ -1,9 +1,11 @@
-<div class="mainDiv">
-    <div class="topDiv">
-        <h4 style="margin:0">PickUp Requests</h4>
-        <mat-icon (click)="closeDialog()" class="cursor">close</mat-icon>
+<div class="main-container">
+    <header class="header">
+      <h2>Pickup Requests</h2>
+      <button class="close-button" mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+    <div class="content">
+      <button mat-raised-button (click)="requestPickUp()">Request Pickup</button>
     </div>
-    <div class="pickupShiftsDiv">
-        <button mat-raised-button (click)="requestPickUp()">Request pickup</button>
-    </div>
-</div>
+  </div>

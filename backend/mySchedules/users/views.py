@@ -94,12 +94,12 @@ def register(request):
 def login_view(request):
     if request.method == "POST":
         try:    
-            print("HELLO")
+            # print("HELLO")
             data = json.loads(request.body)
-            print(data)
+            # print(data)
             username = data.get("username")
             password = data.get("password")
-            print("username:", username)
+            # print("username:", username)
         
             if not username or not password:
                 return JsonResponse({"error": "Username and password are required."}, status=400)
@@ -207,7 +207,7 @@ def getShifts_view(request):
     if request.method == "GET":
         try:
             # Retrieve the start_date and end_date from the query parameters
-            print(request.GET)
+            # print(request.GET)
             start_date_str = int(request.GET.get('start_date'))/1000  # e.g., "2024-11-01"
             end_date_str = int(request.GET.get('end_date'))/1000      # e.g., "2024-11-30"
             # print("Idhar")            
@@ -217,11 +217,11 @@ def getShifts_view(request):
                 return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
             # print("Udhar")
             # Convert the date strings into date objects
-            print(start_date_str, type(start_date_str))
+            # print(start_date_str, type(start_date_str))
             start_date = datetime.datetime.fromtimestamp(start_date_str).date()
             end_date = datetime.datetime.fromtimestamp(end_date_str).date()
             # print("Kidhar")
-            print(start_date, end_date)
+            # print(start_date, end_date)
 
             # # Filter shifts within the date range and order them by date in ascending order
             # shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
@@ -313,7 +313,7 @@ def getShifts_view(request):
 def pickupShift_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
+        # print(data)
         employee_username = data.get("username")
         shift_id = int(data.get("shift_id"))
 
@@ -368,24 +368,33 @@ def get_shift_requests_view(request):
             req_shift_id = int(req_shift_id)
             
             shift_status = 0
+            emp = None
             # check if shift status is approved to any user or not
             if Shift.objects.filter(shift_id=req_shift_id, status="Approved").exists():
                 shift_status = 1
+                emp = Shift.objects.get(shift_id=req_shift_id, status="Approved")
             
-            emp = Shift.objects.get(shift_id=req_shift_id, status="Approved")
 
             # Get all requests for the given shift ID
             if shift_status == 0:
+                # print(shift_status)
                 shift_requests = Shift.objects.filter(shift_id=req_shift_id, status="Request")
-                requests_data = [
-                {"username": shift.employee.username, "shift_request_id": shift.pk, "shift_status": shift_status}
-                for shift in shift_requests
-                ]
+                # print(shift_requests)
+                requests_data = {
+                    "data": [
+                        {
+                            "username": shift.employee.username, 
+                            "shift_request_id": shift.pk, 
+                            "shift_status": shift_status
+                        }
+                        for shift in shift_requests
+                    ]
+                }
             else:
-                requests_data = {"username":emp.employee.username, "shift_request_id": emp.pk, "shift_status": shift_status}
+                requests_data = {"data":{"username":emp.employee.username, "shift_request_id": emp.pk, "shift_status": shift_status}}
             
             # Prepare the data to return            
-
+            print(requests_data)
             return JsonResponse({"requests": requests_data}, status=200)
 
         except Exception as e:
@@ -401,9 +410,9 @@ def approve_shift_request_view(request):
             data = json.loads(request.body)
             shift_request_id = data.get("shift_request_id")
             employee_id = data.get("employee_id")
-            manager_id = data.get('userName')
+            manager_id = data.get('username')
 
-            print(data)
+            print(shift_request_id, employee_id, manager_id)
 
             if not shift_request_id or not employee_id:
                 return JsonResponse({"error": "Shift request ID and employee ID is required."}, status=400)

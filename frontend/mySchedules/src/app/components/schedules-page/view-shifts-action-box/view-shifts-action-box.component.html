@@ -1,26 +1,45 @@
 <div class="shift-action-container">
   <h2>Shift Requests</h2>
+
+  <!-- Display users if available -->
   <div *ngIf="users && users.length > 0; else noUsers">
-    <div *ngIf="shiftstatus == 1;">
-      <li *ngFor="let user of users" class="user-item">
-        <p>Shift has been approved for {{ user }}</p>
-      </li>
+    <!-- Approved Shift -->
+    <div *ngIf="shiftstatus === 1" class="approved-shift">
+      <ul class="approved-user-list">
+        <li *ngFor="let user of users" class="approved-user-item">
+          <p>Shift has been approved for <strong>{{ user }}</strong>.</p>
+        </li>
+      </ul>
     </div>
-    <div *ngIf="shiftstatus == 0;">
+
+    <!-- Pending Shift -->
+    <div *ngIf="shiftstatus === 0" class="pending-shift">
       <ul class="user-list">
         <li *ngFor="let user of users" class="user-item">
           <span>{{ user }}</span>
-          <button mat-raised-button color="primary" (click)="approveUser(user)">Approve</button>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="approveUser(user)">
+            Approve
+          </button>
         </li>
       </ul>
     </div>
   </div>
 
+  <!-- No Users Template -->
   <ng-template #noUsers>
-    <p>No users have requested this shift.</p>
+    <p class="no-users-message">No users have requested this shift.</p>
   </ng-template>
 
+  <!-- Actions -->
   <div class="actions">
-    <button mat-raised-button color="warn" (click)="close()">Close</button>
+    <button 
+      mat-raised-button 
+      color="warn" 
+      (click)="close()">
+      Close
+    </button>
   </div>
 </div>
