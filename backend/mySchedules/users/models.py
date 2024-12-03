@@ -95,5 +95,14 @@ class Approval(models.Model):
     ]
     approval_id = models.AutoField(primary_key=True)
     shift = models.ForeignKey(UniqueShift, on_delete=models.CASCADE)
-    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manager')
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
     approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['manager', 'employee', 'shift'], name='unique_manager_employee_shift')
+        ]
+
+    def __str__(self):
+        return f"Approval for Shift {self.shift} by Manager {self.manager} for Employee {self.employee}"

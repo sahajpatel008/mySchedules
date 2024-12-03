@@ -401,7 +401,7 @@ def approve_shift_request_view(request):
             data = json.loads(request.body)
             shift_request_id = data.get("shift_request_id")
             employee_id = data.get("employee_id")
-            manager_id = data.get('manager_id')
+            manager_id = data.get('userName')
 
             print(data)
 
@@ -415,36 +415,56 @@ def approve_shift_request_view(request):
             except UniqueShift.DoesNotExist:
                 return JsonResponse({"error": "Shift not found."}, status=404)
             
+            try:
+                manager_obj = User.objects.get(pk=manager_id)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "The manager does not exist"}, status=404)
+            
+            try:
+                employee_obj = User.objects.get(pk=employee_id)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "The user does not exist"}, status=404)
 
             # Get the shift request object
             try:
                 approved_request = Shift.objects.filter(shift_id=shift_request_id, employee=employee_id)
             except Shift.DoesNotExist:
                 return JsonResponse({"error": "Shift request not found or already processed."}, status=404)
-
+            
             # Update the approved request status to "approved"
             approved_request.update(status='Approved')
             # Update the approval status for the manager in the Approval model
-            Approval.objects.create(shift=shift_request_id, manager=manager_id, approval_status='Approved')
-           
+            print("here")
+            Approval.objects.get_or_create(shift=shift_obj, manager=manager_obj, employee=employee_obj, approval_status='Approved')
+            print("there")
             # Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).update(status='Denied') #this works
 
             # Deny all other shift requests for the same shift_id except the current employee
             affected_shifts = Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id)
-
+            print(affected_shifts)
             # Update their status to 'Denied'
-            affected_shifts.update(status='Denied')
+            affected_shifts.update(status='Declined')
 
-            # Create Approval rows for the affected shifts
+            # Get all employees with the specified shift_id except the given employee_id
+            # excluded_employee_ids = Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).values_list('employee', flat=True)
+
+            # # Convert the queryset to a list (if necessary)
+            # excluded_employee_ids_list = list(excluded_employee_ids)
             
+            # Create Approval rows for the affected shifts
+            print(shift_obj, type(shift_obj))
             approval_entries = [
                 Approval(
                     shift=shift_obj, 
-                    manager=manager_id,  # Replace `current_manager` with the manager responsible for the approval
+                    manager=manager_obj,
+                    employee=shift.employee,
                     approval_status='Declined'
                 )
                 for shift in affected_shifts
             ]
+
+            for x in approval_entries:
+                print(x)
 
             # Bulk create the Approval entries for better performance
             Approval.objects.bulk_create(approval_entries)
