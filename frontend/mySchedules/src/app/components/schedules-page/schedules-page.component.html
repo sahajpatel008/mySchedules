@@ -58,7 +58,7 @@
             <span *ngIf="!shifts" style="display: flex;">
               <li class="usersClass" *ngFor="let date of getDatesInRange()"></li>
             </span>
-            <li *ngFor="let dateEntry of shifts?.data" class="usersClass">  
+            <li *ngFor="let dateEntry of shifts" class="usersClass">  
               <ul>
                 <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="getEmployeesByShiftId(shift.shift_id)">
                   <strong>Location:</strong> {{ shift.location }}<br>
