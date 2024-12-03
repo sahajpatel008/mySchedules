@@ -19,7 +19,7 @@ export class ViewShiftsActionBoxComponent implements OnInit {
     public dialogRef: MatDialogRef<ViewShiftsActionBoxComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.shiftId = data.shiftId; // Get the shift ID passed via the dialog
+    this.shiftId = data.shift_id; // Get the shift ID passed via the dialog
     this.users = data.username;
     this.status = data.status;
   }
