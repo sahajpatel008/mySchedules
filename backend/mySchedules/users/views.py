@@ -257,7 +257,8 @@ def getShifts_view(request):
                             "user": shift.employee.username if shift.employee else None,
                             "start_time": shift.start_time.strftime("%I:%M %p"),
                             "end_time": shift.end_time.strftime("%I:%M %p"),
-                            "location": shift.location
+                            "location": shift.location,
+                            "shift_id": shift.shift_id
                         }
                         for shift in shifts
                     ]

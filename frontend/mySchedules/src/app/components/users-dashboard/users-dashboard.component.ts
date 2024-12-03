@@ -22,7 +22,7 @@ export class UsersDashboardComponent {
   user: any;
   userNameFromStorage: string | null = null;
   shiftsAsPerLocation:any;
-
+  employee_id: any;
 
   constructor(public dialog: MatDialog, private http: HttpClient,private router: Router) {
     // Initialize the range form group with null values
@@ -69,24 +69,8 @@ export class UsersDashboardComponent {
       this.getShift();
     });
     this.userNameFromStorage = localStorage.getItem('username');
-
   }
 
-  // getDatesInRange(): Date[] {
-  //   const startDate = this.range.value.start;
-  //   const endDate = this.range.value.end;
-  //   const dates: Date[] = [];
-
-  //   if (startDate && endDate) {
-  //     let currentDate = new Date(startDate);
-  //     while (currentDate <= endDate) {
-  //       dates.push(new Date(currentDate));
-  //       currentDate.setDate(currentDate.getDate() + 1);
-  //     }
-  //   }
-
-  //   return dates;
-  // }
   getDatesInRange(): Date[] {
     const start = this.range.get('start')?.value;
     const end = this.range.get('end')?.value;
@@ -113,9 +97,11 @@ export class UsersDashboardComponent {
 
     this.params = {
       start_date: this.range.value.start?.getTime(),  // Convert start date to timestamp
-      end_date: this.range.value.end?.getTime() 
+      end_date: this.range.value.end?.getTime(),
+      userName: this.userNameFromStorage
     }
 
+    let shiftLocation: any;
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.availableShifts = response.data; // Assuming the backend returns a list of shifts
@@ -123,22 +109,20 @@ export class UsersDashboardComponent {
 
           if (element.data.length > 0) {
             element.data.forEach((shift: any) => {
-
-              this.viewShiftsAsPerLocations(shift.location);
-            
+              shiftLocation = shift.location;            
               this.shiftId = shift.shift_id;
-              this.userName = shift.user;
+              this.employee_id = shift.employee_id;
+              // this.userName = shift.user;
             });
           } 
         });
+        this.viewShiftsAsPerLocations(shiftLocation);
       },
       error => console.error(error)
     );
   }
 
   shiftPickUp(){
-    console.log(this.shiftId,this.userName)
-
     const dialogRef = this.dialog.open(PickUpShiftsComponent, {
       panelClass: 'custom-modalbox', 
       height: '60vh',
@@ -150,16 +134,17 @@ export class UsersDashboardComponent {
   viewShiftsAsPerLocations(shift: any){
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
     const headers = { 'Content-Type': 'application/json' };
-    // console.log(shift);
+
     this.params = {
       start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
       end_date: this.range.value.end?.getTime(),
       location: shift,
+      userName: this.userNameFromStorage,
+      employee_id: this.employee_id
     };
-    // console.log(this.params)
+
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        console.log(response);
         this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
         console.log(this.shiftsAsPerLocation)
       },
@@ -167,7 +152,6 @@ export class UsersDashboardComponent {
     );
   }
   getKeys(obj: any): string[] {
-    console.log(obj)
     return Object.keys(obj); // Returns an array of keys, e.g., ['johndoe']
   }
 

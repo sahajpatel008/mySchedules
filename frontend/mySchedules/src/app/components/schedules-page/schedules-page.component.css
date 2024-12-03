@@ -24,7 +24,7 @@
     background: #e5e5e5;
     padding:1rem;
     border: 1px solid #ccc;
-    min-width:170px;
+    width:170px;
     display: flex;
     height:7vh;
     justify-content: center;
@@ -62,7 +62,7 @@
     background: aliceblue;
     padding: 2% 5%;
     border-left: 2px solid #91c8f8;
-    margin: 1%;
+    margin: 5% 1%;
     font-size: 14px;
 }
 .footer{
@@ -74,4 +74,13 @@
     display: flex;
     justify-content: end;
     background: #fff;
+}
+.shiftsAsPerLocClass{
+    width:170px;
+    border: 1px solid #ccc;
+    margin: 0;
+    height: 7vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
