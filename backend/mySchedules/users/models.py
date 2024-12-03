@@ -79,3 +79,14 @@ class Pickup(models.Model):
 
     def __str__(self):
         return f"Pickup {self.shift_id} by Employee {self.employee}"
+    
+# Approval model
+class Approval(models.Model):
+    APPROVAL_STATUS_CHOICES = [
+        ('Approved', 'Approved'),
+        ('Declined', 'Declined'),
+    ]
+    approval_id = models.AutoField(primary_key=True)
+    shift = models.ForeignKey(UniqueShift, on_delete=models.CASCADE)
+    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+    approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES)
