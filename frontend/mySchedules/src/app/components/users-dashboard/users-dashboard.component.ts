@@ -121,13 +121,14 @@ export class UsersDashboardComponent {
         this.availableShifts = response.data; // Assuming the backend returns a list of shifts
         this.availableShifts.forEach((element: any) => {
 
+          console.log('this.availableShifts',this.availableShifts)
           if (element.data.length > 0) {
             element.data.forEach((shift: any) => {
-
+              console.log('shift', shift)
               this.viewShiftsAsPerLocations(shift.location);
             
               this.shiftId = shift.shift_id;
-              this.userName = shift.user;
+              // this.userName = shift.user;
             });
           } 
         });
@@ -167,7 +168,6 @@ export class UsersDashboardComponent {
     );
   }
   getKeys(obj: any): string[] {
-    console.log(obj)
     return Object.keys(obj); // Returns an array of keys, e.g., ['johndoe']
   }
 
