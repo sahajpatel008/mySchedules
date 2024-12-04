@@ -1,0 +1,23 @@
+  <div class="delete-container">
+    <button class="delete-button" (click)="openDeleteDialog()">Delete Shift</button>
+  
+    <mat-dialog-content>
+      <div *ngIf="isDialogOpen" class="delete-dialog">
+        <!-- Header Section -->
+        <div class="dialog-header">
+          <h3 class="dialog-title">Delete Shift</h3>
+          <button class="close-button" (click)="closeDialog()">&#x2715;</button>
+        </div>
+  
+        <!-- Content Section -->
+        <p>Are you sure you want to delete this shift?</p>
+  
+        <!-- Actions Section -->
+        <div class="dialog-actions">
+          <button mat-raised-button color="warn" (click)="deleteShift()">Delete</button>
+          <button mat-raised-button color="primary" (click)="closeDialog()">Cancel</button>
+        </div>
+      </div>
+    </mat-dialog-content>
+  </div>
+  

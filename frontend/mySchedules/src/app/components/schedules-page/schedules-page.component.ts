@@ -5,6 +5,7 @@ import { ViewShiftsActionBoxComponent } from './view-shifts-action-box/view-shif
 import {MatDialog} from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { DeleteActionBoxComponent } from './delete-action-box/delete-action-box.component';
 
 @Component({
   selector: 'app-schedules-page',
@@ -239,5 +240,12 @@ export class SchedulesPageComponent implements OnInit{
   getKeys(obj: any): string[] {
     return Object.keys(obj); // Returns an array of keys, e.g., ['johndoe']
   }
-  
+  deleteShiftByShiftId(ShiftId: number){
+    const dialogRef = this.dialog.open(DeleteActionBoxComponent, {
+      panelClass: 'custom-modalbox', 
+      height: '60vh',
+      width: '60vw',
+      data: {"shift_id": ShiftId}
+    });
+  }  
 }

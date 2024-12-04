@@ -138,20 +138,22 @@ export class UsersDashboardComponent {
     let shiftStatus: any;
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        // console.log(response.data)
         this.shiftsAsPerStatus = response.data; // Assuming the backend returns a list of shifts
         this.shiftsAsPerStatus.forEach((element: any) => {
-          // console.log(element.shifts);
           if (element.shifts.length > 0) {
             element.shifts.forEach((shift: any) => {
+              // shiftStatus = 'Request';    
               shiftStatus = shift.status;    
+              console.log('shiftStatus: ',shiftStatus)
+              if(shiftStatus == 'approved'){
+                this.isApproved = true;
+              } else{
+                this.isApproved = false;
+              }
             });
           } 
         });
-        // console.log('shiftStatus: ',shiftStatus)
-        if(shiftStatus == 'approved'){
-          this.isApproved = true;
-        }
+
       },
       error => console.error(error)
     );
