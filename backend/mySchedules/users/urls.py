@@ -7,6 +7,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('makeShift/', views.makeShift_view, name='makeShift'),
     path('getShifts/', views.getShifts_view, name='getShift'),
+    path('postedShifts/', views.getPostedShifts_view, name='postedShift'),
     path('pickupShift/', views.pickupShift_view, name='pickupShift'),
     path("getPickupRequests/", views.get_shift_requests_view,name='getPickup'),
     path('approvePickupRequests/', views.approve_shift_request_view, name='approveRequests'),

@@ -203,6 +203,79 @@ def makeShift_view(request):
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
 @csrf_exempt
+def getPostedShifts_view(request):
+    if request.method == "GET":
+        try:
+            # Retrieve the start_date and end_date from the query parameters
+            # print(request.GET)
+            start_date_str = int(request.GET.get('start_date'))/1000  # e.g., "2024-11-01"
+            end_date_str = int(request.GET.get('end_date'))/1000      # e.g., "2024-11-30"
+            username = request.GET.get('userName')
+            # print("Idhar")            
+
+            print(request.GET)
+            
+            # Validate if both start_date and end_date are provided
+            if not start_date_str or not end_date_str:
+                return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
+            # print("Udhar")
+            # Convert the date strings into date objects
+            # print(start_date_str, type(start_date_str))
+            start_date = datetime.datetime.fromtimestamp(start_date_str).date()
+            end_date = datetime.datetime.fromtimestamp(end_date_str).date()
+            
+
+            # Initialize an empty list to hold the data
+            shifts_data = []
+            
+            user = User.objects.get(username=username)
+
+            # Iterate over the range of dates
+            current_date = start_date
+            while current_date <= end_date:
+                # Query shifts for the current date
+                shifts = UniqueShift.objects.filter(date=current_date).order_by('date') #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+                # print(user.username)
+                # print(shifts)
+
+                # Prepare the shift data for the current date
+                date_shifts = {
+                    "date": current_date.strftime("%m/%d/%Y"),
+                    "data": [
+                        {
+                            "user": shift.employee.username if shift.employee else None,
+                            "start_time": shift.start_time.strftime("%I:%M %p"),
+                            "end_time": shift.end_time.strftime("%I:%M %p"),
+                            "location": shift.location,
+                            "shift_id": shift.shift_id
+                        }
+                        for shift in shifts
+                    ]
+                }
+
+                # Append the data for the current date to the list
+                shifts_data.append(date_shifts)
+
+                # Move to the next day
+                current_date += timedelta(days=1)
+
+            # Return the shifts data as a JSON response
+            return JsonResponse({"data": shifts_data}, status=201)
+
+
+        except ValueError as e:
+            print("The exception:", e)
+            return JsonResponse({"error": f"Invalid date format: {str(e)}"}, status=400)
+        
+        except Exception as e:
+            print("The exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+    
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
+
+@csrf_exempt
 def getShifts_view(request):
     if request.method == "GET":
         try:

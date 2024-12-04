@@ -33,7 +33,7 @@
             </li>
           </ul>
           <ul class="usersData" style="display: flex;">
-            <li *ngFor="let dateEntry of shifts" class="usersClass">  
+            <li *ngFor="let dateEntry of posted_shifts" class="usersClass">  
               <ul>
                 <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" (click)="deleteShiftByShiftId(shift.shift_id)">
                   <strong>Location:</strong> {{ shift.location }}<br>

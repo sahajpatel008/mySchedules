@@ -21,6 +21,7 @@ export class SchedulesPageComponent implements OnInit{
   shiftId: number | undefined;
   shift_status: any;
   shifts: any;
+  posted_shifts: any;
   panelOpenState = false;
   params: any;
   startDate: any;
@@ -83,8 +84,10 @@ export class SchedulesPageComponent implements OnInit{
     console.log(this.userNameFromStorage);
     
     this.getShift();
+    this.postedShift();
     this.range.valueChanges.subscribe(() => {
       this.getShift();
+      this.postedShift();
     });
     
 
@@ -192,6 +195,38 @@ export class SchedulesPageComponent implements OnInit{
       width: '60vw',
       data: { "username":this.users_shift, "shift_id": shiftId, "status": this.shift_status }
     });
+  }
+
+  postedShift(){
+    const apiUrl = 'http://127.0.0.1:8000/users/postedShifts/';
+    const headers = { 'Content-Type': 'application/json' };
+
+    this.params = {
+      start_date: this.range.value.start?.getTime(), // Convert start date to timestamp
+      end_date: this.range.value.end?.getTime(),
+      userName: this.userNameFromStorage
+    };
+    
+    this.http.get(apiUrl, { params: this.params, headers }).subscribe(
+      (response: any) => {
+        this.posted_shifts = response.data; // Assuming the backend returns a list of shifts
+        
+        // this.shifts.forEach((entry: any) => {
+        //   let shiftId, userName;
+        //   // Check if there are any shifts for the current date
+        //   if (entry.data.length > 0) {
+        //     entry.data.forEach((shift: any) => {
+        //       this.viewShiftsAsPerLocations(shift.location);
+
+        //       shiftId = shift.shift_id;
+        //       userName = shift.user;
+        //       this.employee_id = shift.employee_id;
+        //     });
+        //   } 
+        // })
+      },
+      error => console.error(error)
+    );
   }
 
   requestedShifts(shiftId: any, userName: any){
