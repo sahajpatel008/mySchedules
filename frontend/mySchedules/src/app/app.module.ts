@@ -26,6 +26,7 @@ import { ViewShiftsActionBoxComponent } from './components/schedules-page/view-s
 import { PickUpShiftsComponent } from './components/users-dashboard/pick-up-shifts/pick-up-shifts.component';
 import { ShiftCreatedModalComponent } from './components/schedules-page/shifts-action-box/shift-created-modal/shift-created-modal.component';
 import {MatMenuModule} from '@angular/material/menu';
+import { DeleteActionBoxComponent } from './components/schedules-page/delete-action-box/delete-action-box.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {MatMenuModule} from '@angular/material/menu';
     UsersDashboardComponent,
     ViewShiftsActionBoxComponent,
     PickUpShiftsComponent,
-    ShiftCreatedModalComponent
+    ShiftCreatedModalComponent,
+    DeleteActionBoxComponent
   ],
   imports: [
     BrowserModule,
