@@ -21,7 +21,7 @@ export class UsersDashboardComponent {
   shiftId: any;
   userName: any;
   user: any;
-  userNameFromStorage: string | null = null;
+  userNameFromStorage: string | null = localStorage.getItem('username');
   shiftsAsPerLocation:any;
   employee_id: any;
   isApproved: boolean = false;
@@ -71,7 +71,7 @@ export class UsersDashboardComponent {
     this.range.valueChanges.subscribe(() => {
       this.getShift();
     });
-    this.userNameFromStorage = localStorage.getItem('username');
+    // this.userNameFromStorage = localStorage.getItem('username');
   }
 
   getDatesInRange(): Date[] {
@@ -138,11 +138,12 @@ export class UsersDashboardComponent {
     let shiftStatus: any;
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
+        console.log(response.data)
         this.shiftsAsPerStatus = response.data; // Assuming the backend returns a list of shifts
         this.shiftsAsPerStatus.forEach((element: any) => {
-
-          if (element.data.length > 0) {
-            element.data.forEach((shift: any) => {
+          // console.log(element.shifts);
+          if (element.shifts.length > 0) {
+            element.shifts.forEach((shift: any) => {
               shiftStatus = shift.status;    
             });
           } 

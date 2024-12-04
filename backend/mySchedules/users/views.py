@@ -492,18 +492,13 @@ def getshifts_allusers_view(request):
         try:
             # Extract data from the request
             # data = json.loads(request.body)
-            # print(data)
-            print("Start Date: ",request.GET.get('start_date'))
             start_date_str = int(float(request.GET.get('start_date'))/1000)  # e.g., "2024-11-01"
             end_date_str = int(float(request.GET.get('end_date'))/1000) 
-            print("Start Date String: ",start_date_str)
             # format_string = "%Y-%m-%d"
             # start_date = datetime.datetime.strptime(start_date, format_string)
             start_date = datetime.datetime.fromtimestamp(start_date_str)
             end_date = datetime.datetime.fromtimestamp(end_date_str)
             # end_date = datetime.datetime.strptime(end_date, format_string)
-
-            print(start_date, type(start_date))
             
 
             if not all([start_date, end_date]):
@@ -579,6 +574,59 @@ def getshifts_allusers_view(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+def myShifts(request):
+    if request.method == "GET":
+        try:
+            username = request.GET.get('userName')
+            start_date_str = int(float(request.GET.get('start_date')) / 1000)
+            end_date_str = int(float(request.GET.get('end_date')) / 1000)
+
+            start_date = datetime.datetime.fromtimestamp(start_date_str).date()
+            end_date = datetime.datetime.fromtimestamp(end_date_str).date()
+            
+            # Generate the range of dates
+            all_dates = []
+            current_date = start_date
+            while current_date <= end_date:
+                all_dates.append(current_date)
+                current_date += timedelta(days=1)
+            
+            # Fetch shifts for the employee with "Request" or "Approved" status
+            shift_ids = list(Shift.objects.filter(employee_id=username, status__in=["Request", "Approved"]).values_list('shift_id', flat=True))
+
+            # Fetch unique shifts for the given date range
+            unique_shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date, shift_id__in=shift_ids)
+
+            # Create a dictionary to store shifts grouped by date
+            shifts_by_date = {date: [] for date in all_dates}
+
+            # Populate shifts_by_date with shifts grouped by their corresponding dates
+            for unique_shift in unique_shifts:
+                shift_date = unique_shift.date
+                # Fetch the shift status from the Shift table
+                shift_status = Shift.objects.filter(shift_id=unique_shift.shift_id, employee_id=username).first().status
+                if shift_date in shifts_by_date:
+                    shifts_by_date[shift_date].append({
+                        "shift_id": unique_shift.shift_id,
+                        "start_time": unique_shift.start_time.strftime("%I:%M %p"),
+                        "end_time": unique_shift.end_time.strftime("%I:%M %p"),
+                        "location": unique_shift.location,
+                        "status": shift_status  # Add shift status here
+                    })
+
+            # Create the response data
+            response_data = [
+                {
+                    "shifts": shifts_by_date[date]  # Either a list of shifts or an empty list
+                }
+                for date in all_dates
+            ]
+            return JsonResponse({"data": response_data}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
 
 @login_required
 def home(request):

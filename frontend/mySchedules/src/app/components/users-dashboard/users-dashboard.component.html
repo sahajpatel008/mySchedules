@@ -31,7 +31,7 @@
             <ul class="usersData" style="display:flex;">
               <li *ngFor="let dateEntry of shiftsAsPerStatus" class="usersClass">  
                 <ul>
-                  <li *ngFor="let shift of dateEntry.data" class="shiftsContainer" [ngStyle]="{'background-color': isApproved ? '#dcffe8' : '#f3f3f3', 'border-color': isApproved ? '#83ff7f' : '#d7d7d7' }">
+                  <li *ngFor="let shift of dateEntry.shifts" class="shiftsContainer" [ngStyle]="{'background-color': isApproved ? '#dcffe8' : '#f3f3f3', 'border-color': isApproved ? '#83ff7f' : '#d7d7d7' }">
                     <strong>Location:</strong> {{ shift.location }}<br>
                     <strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}
                   </li>

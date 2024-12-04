@@ -11,5 +11,6 @@ urlpatterns = [
     path("getPickupRequests/", views.get_shift_requests_view,name='getPickup'),
     path('approvePickupRequests/', views.approve_shift_request_view, name='approveRequests'),
     path('getShifts_allUsers/', views.getshifts_allusers_view, name='getshifts_allusers'),
+    path('getMyShifts/', views.myShifts, name='getMyShifts'),
     path("home/", views.home, name='home')
 ]
