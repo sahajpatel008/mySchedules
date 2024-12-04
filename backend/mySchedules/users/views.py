@@ -727,6 +727,27 @@ def myShifts(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
+@csrf_exempt
+def deleteShift_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print(data)
+            shift_id = data.get("shift_id")
+            
+            try:
+                shift = UniqueShift.objects.get(shift_id=shift_id)
+                shift.delete()
+                print(f"Shift with ID {shift_id} successfully deleted.")
+            except UniqueShift.DoesNotExist:
+                print(f"Shift with ID {shift_id} does not exist.")
+            
+        except Exception as e:
+            print("Exception:", e)
+            return JsonResponse({"error": str(e)}, status=400)
+        
+    return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
 
 @login_required
 def home(request):

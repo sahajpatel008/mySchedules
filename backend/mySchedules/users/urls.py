@@ -13,5 +13,6 @@ urlpatterns = [
     path('approvePickupRequests/', views.approve_shift_request_view, name='approveRequests'),
     path('getShifts_allUsers/', views.getshifts_allusers_view, name='getshifts_allusers'),
     path('getMyShifts/', views.myShifts, name='getMyShifts'),
+    path("deleteShifts/", views.deleteShift_view, name='deleteShift'),
     path("home/", views.home, name='home')
 ]
