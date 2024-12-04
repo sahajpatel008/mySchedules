@@ -109,7 +109,7 @@ export class UsersDashboardComponent {
       (response: any) => {
         this.availableShifts = response.data; // Assuming the backend returns a list of shifts
         this.availableShifts.forEach((element: any) => {
-
+          console.log(element.data);
           if (element.data.length > 0) {
             element.data.forEach((shift: any) => {
               shiftLocation = shift.location;            
@@ -138,7 +138,7 @@ export class UsersDashboardComponent {
     let shiftStatus: any;
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
-        console.log(response.data)
+        // console.log(response.data)
         this.shiftsAsPerStatus = response.data; // Assuming the backend returns a list of shifts
         this.shiftsAsPerStatus.forEach((element: any) => {
           // console.log(element.shifts);
@@ -148,7 +148,7 @@ export class UsersDashboardComponent {
             });
           } 
         });
-        console.log('shiftStatus: ',shiftStatus)
+        // console.log('shiftStatus: ',shiftStatus)
         if(shiftStatus == 'approved'){
           this.isApproved = true;
         }
@@ -157,12 +157,12 @@ export class UsersDashboardComponent {
     );
   }
 
-  shiftPickUp(){
+  shiftPickUp(shiftId: any){
     const dialogRef = this.dialog.open(PickUpShiftsComponent, {
       panelClass: 'custom-modalbox', 
       height: '60vh',
       width: '60vw',
-      data: {"shift_id": this.shiftId, "username": this.userNameFromStorage }
+      data: {"shift_id": shiftId, "username": this.userNameFromStorage }
     });
   }
 
@@ -181,7 +181,7 @@ export class UsersDashboardComponent {
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
         this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
-        console.log(response.data);
+        // console.log(response.data);
       },
       error => console.error(error)
     );
