@@ -210,7 +210,10 @@ def getShifts_view(request):
             # print(request.GET)
             start_date_str = int(request.GET.get('start_date'))/1000  # e.g., "2024-11-01"
             end_date_str = int(request.GET.get('end_date'))/1000      # e.g., "2024-11-30"
+            username = request.GET.get('userName')
             # print("Idhar")            
+
+            print(request.GET)
             
             # Validate if both start_date and end_date are provided
             if not start_date_str or not end_date_str:
@@ -242,12 +245,26 @@ def getShifts_view(request):
 
             # Initialize an empty list to hold the data
             shifts_data = []
+            
+            user = User.objects.get(username=username)
 
             # Iterate over the range of dates
             current_date = start_date
             while current_date <= end_date:
                 # Query shifts for the current date
-                shifts = UniqueShift.objects.filter(date=current_date).order_by('date')
+                # shifts = UniqueShift.objects.filter(date=current_date).order_by('date') #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+                # Find all shift IDs where the employee has an entry in the Shift table
+                existing_shift_ids = Shift.objects.filter(employee=user).values_list('shift_id', flat=True)
+
+                # Find UniqueShift instances where the employee does not have an entry in the Shift table
+                shifts = UniqueShift.objects.exclude(pk__in=existing_shift_ids).exclude(employee__isnull=False).filter(date=current_date).order_by('date')
+
+
+                
+
+                # print(user.username)
+                # print(shifts)
 
                 # Prepare the shift data for the current date
                 date_shifts = {
@@ -343,6 +360,14 @@ def pickupShift_view(request):
                 employee=employee_obj,
                 request_status= 'Request'
             )
+
+            # send_mail(
+            #     f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
+            #     f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
+            #     settings.EMAIL_HOST_USER,  # From email (use your configured email)
+            #     [employee_obj.email],  # To email (user's email)
+            #     fail_silently=False,
+            # )
             
             
             return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)

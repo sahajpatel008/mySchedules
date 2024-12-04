@@ -77,13 +77,16 @@ export class SchedulesPageComponent implements OnInit{
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
-
+    console.log(localStorage.getItem('username'));
+    this.userNameFromStorage = localStorage.getItem('username');
+    console.log(this.userNameFromStorage);
+    
     this.getShift();
     this.range.valueChanges.subscribe(() => {
       this.getShift();
     });
+    
 
-    this.userNameFromStorage = localStorage.getItem('username');
   }
   
   getDatesInRange(): Date[] {
