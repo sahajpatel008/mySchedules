@@ -443,10 +443,12 @@ def approve_shift_request_view(request):
             # Update the approved request status to "approved"
             approved_request.update(status='Approved')
             # Update the approval status for the manager in the Approval model
-            print("here")
             Approval.objects.get_or_create(shift=shift_obj, manager=manager_obj, employee=employee_obj, approval_status='Approved')
-            print("there")
             # Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id).update(status='Denied') #this works
+            
+            #Update the status of acceptence in UniqueShift
+            shift_obj.employee = employee_obj
+            shift_obj.save()
 
             # Deny all other shift requests for the same shift_id except the current employee
             affected_shifts = Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id)
