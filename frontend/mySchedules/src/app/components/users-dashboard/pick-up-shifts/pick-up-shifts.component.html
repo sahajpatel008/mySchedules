@@ -1,11 +1,18 @@
 <div class="main-container">
-    <header class="header">
-      <h2>Pickup Requests</h2>
-      <button class="close-button" mat-icon-button (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </header>
-    <div class="content">
-      <button mat-raised-button (click)="requestPickUp()">Request Pickup</button>
+  <header class="header">
+    <h2>Pickup Requests</h2>
+    <button class="close-button" mat-icon-button (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="content">
+    <!-- Show error message if there is an error -->
+    <div *ngIf="errorStatus" class="error-message">
+      <p>{{ errorMessage }}</p>
     </div>
+
+    <!-- Show the "Request Pickup" button if no error exists -->
+    <button *ngIf="!errorMessage" mat-raised-button (click)="requestPickUp()">Request Pickup</button>
   </div>
+</div>

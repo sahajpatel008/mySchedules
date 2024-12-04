@@ -11,6 +11,8 @@ export class PickUpShiftsComponent {
   params: any;
   shiftId: any;
   user: any;
+  errorMessage: string = '';
+  errorStatus: any;
 
   constructor(
     public dialogRef: MatDialogRef<PickUpShiftsComponent>,
@@ -25,17 +27,29 @@ export class PickUpShiftsComponent {
   closeDialog() {
     this.dialogRef.close(this.params);
   }
-  requestPickUp(){
+  requestPickUp() {
     const apiUrl = `http://127.0.0.1:8000/users/pickupShift/`; // Example API endpoint
     const headers = { 'Content-Type': 'application/json' };
     const body = { username: this.user, shift_id: this.shiftId }; // Send the shift ID in JSON format
-    console.log('body: ',body)
+    console.log('body: ', body);
+
     this.http.post(apiUrl, body, { headers }).subscribe(
       (response: any) => {
-        console.log('response',response)
+        this.errorStatus = 0;
+        console.log('Shift pickup request successful:', response);
+        this.dialogRef.close('Success'); // Optionally close dialog with success message
       },
       error => {
+        this.errorStatus = 1;
         console.error('Error fetching shift requests:', error);
+        if (error.status === 400 && error.error.message === 'shift pickup request already exists.') {
+          // Show error message if status 400 and specific message
+          this.errorMessage = 'Shift pickup request already exists!';
+         
+        } else {
+          this.errorMessage = 'An error occurred while processing your request. Please try again later.';
+        }
+      this.errorStatus = 0;
       }
     );
   }
