@@ -372,12 +372,31 @@ def pickupShift_view(request):
                 request_status= 'Request'
             )
 
-            send_mail(
-                f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
-                f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
-                settings.EMAIL_HOST_USER,  # From email (use your configured email)
-                [employee_obj.email],  # To email (user's email)
-                fail_silently=False,
+            time_difference = shift_obj.end_time - shift_obj.start_time
+            hours = time_difference.total_seconds() / 3600  # Convert seconds to hours
+
+            # send_mail(
+            #     f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
+            #     f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
+            #     settings.EMAIL_HOST_USER,  # From email (use your configured email)
+            #     [employee_obj.email],  # To email (user's email)
+            #     fail_silently=False,
+            # )
+
+            send_mail(subject=f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%I:%M %p")}',
+                message=(
+                    f'Hello {employee_obj.username}!\n\n'
+                    f"A pickup request has been generated for your shift. Here are the details:\n\n"
+                    f"Location: {shift_obj.location}\n"
+                    f"Start Time: {shift_obj.start_time.strftime('%I:%M %p')}\n"
+                    f"End Time: {shift_obj.end_time.strftime('%I:%M %p')}\n"
+                    f"Hours: {hours:.2f} hours\n\n"
+                    f"Thank you,\n"
+                    f"mySchedules" 
+                ),
+                from_email=settings.EMAIL_HOST_USER,  # From email (use your configured email)
+                recipient_list=[employee_obj.email],  # To email (user's email)
+                fail_silently=False
             )
             
             
@@ -484,6 +503,7 @@ def approve_shift_request_view(request):
             
             #Update the status of acceptence in UniqueShift
             shift_obj.employee = employee_obj
+            shift_obj.manager = manager_obj
             shift_obj.save()
 
             # Deny all other shift requests for the same shift_id except the current employee
