@@ -502,6 +502,7 @@ def approve_shift_request_view(request):
             shift_obj.employee = employee_obj
             shift_obj.manager = manager_obj
             shift_obj.save()
+            
 
             # Deny all other shift requests for the same shift_id except the current employee
             affected_shifts = Shift.objects.filter(shift_id=shift_request_id).exclude(employee=employee_id)
@@ -532,6 +533,21 @@ def approve_shift_request_view(request):
 
             # Bulk create the Approval entries for better performance
             Approval.objects.bulk_create(approval_entries)
+
+            send_mail(subject=f'Shift approved at {shift_obj.location} - {shift_obj.date.strftime("%I:%M %p")}',
+                message=(
+                    f'Hello {employee_obj.username}!\n\n'
+                    f"Request approved by: {manager_obj.username}\n\n"
+                    f"Location: {shift_obj.location}\n"
+                    f"Start Time: {shift_obj.start_time.strftime('%I:%M %p')}\n"
+                    f"End Time: {shift_obj.end_time.strftime('%I:%M %p')}\n\n"
+                    f"See you there!\n"
+                    f"mySchedules" 
+                ),
+                from_email=settings.EMAIL_HOST_USER,  # From email (use your configured email)
+                recipient_list=[employee_obj.email],  # To email (user's email)
+                fail_silently=False
+            )
 
             return JsonResponse({"message": "Shift request approved successfully. Other requests declined."}, status=200)
 
