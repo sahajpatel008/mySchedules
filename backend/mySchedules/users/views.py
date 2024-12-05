@@ -372,9 +372,7 @@ def pickupShift_view(request):
                 request_status= 'Request'
             )
 
-            time_difference = shift_obj.end_time - shift_obj.start_time
-            hours = time_difference.total_seconds() / 3600  # Convert seconds to hours
-
+            
             # send_mail(
             #     f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
             #     f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
@@ -390,7 +388,6 @@ def pickupShift_view(request):
                     f"Location: {shift_obj.location}\n"
                     f"Start Time: {shift_obj.start_time.strftime('%I:%M %p')}\n"
                     f"End Time: {shift_obj.end_time.strftime('%I:%M %p')}\n"
-                    f"Hours: {hours:.2f} hours\n\n"
                     f"Thank you,\n"
                     f"mySchedules" 
                 ),
