@@ -741,6 +741,8 @@ def deleteShift_view(request):
                 print(f"Shift with ID {shift_id} successfully deleted.")
             except UniqueShift.DoesNotExist:
                 print(f"Shift with ID {shift_id} does not exist.")
+
+            return JsonResponse({"message": f"Shift :{shift_id} deleted successfully."})
             
         except Exception as e:
             print("Exception:", e)
