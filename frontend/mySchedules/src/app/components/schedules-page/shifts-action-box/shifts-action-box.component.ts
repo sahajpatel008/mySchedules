@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { ShiftCreatedModalComponent } from './shift-created-modal/shift-created-modal.component';
 
@@ -27,7 +27,23 @@ export class ShiftsActionBoxComponent {
     private http: HttpClient,
     public dialog: MatDialog,
   ) {
+    this.getLocations();
     this.generateTimeOptions();
+  }
+
+  getLocations(){
+    const apiUrl = ' http://127.0.0.1:8000/users/getLocations/';
+    const headers = { 'Content-Type': 'application/json' };
+
+    this.params = {}
+
+    this.http.post(apiUrl, this.params, { headers }).subscribe(
+      (response: any) => {
+
+        this.locations = response.locations;
+      },
+      error => console.error(error)
+    );
   }
 
   ngOnInit(): void{
@@ -41,7 +57,7 @@ export class ShiftsActionBoxComponent {
       })
       .then(data => {
         this.users = data.users;
-        this.locations = data.location;
+        // this.locations = data.location;
       })
       .catch(error => {
         console.error('There was a problem with the fetch operation:', error);

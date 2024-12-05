@@ -14,5 +14,6 @@ urlpatterns = [
     path('getShifts_allUsers/', views.getshifts_allusers_view, name='getshifts_allusers'),
     path('getMyShifts/', views.myShifts, name='getMyShifts'),
     path("deleteShifts/", views.deleteShift_view, name='deleteShift'),
+    path('getLocations/', views.getLocations_view, name = "getLocations"),
     path("home/", views.home, name='home')
 ]

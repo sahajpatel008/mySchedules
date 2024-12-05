@@ -24,7 +24,7 @@
                   <mat-label>location</mat-label>
                   <mat-select [(ngModel)]="selectedLocation" name="location">
                     <mat-option *ngFor="let location of locations" [value]="location.loc">
-                      {{location.loc}}
+                      {{location}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>

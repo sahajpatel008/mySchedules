@@ -156,6 +156,19 @@ def logout_view(request):
     return JsonResponse({"error": "Invalid HTTP method."}, status=405)
 
 @csrf_exempt
+def getLocations_view(request):
+    if request.method == "POST":
+        try:
+            loc = list(Locations.objects.all().values_list('location',flat=True))
+            print(loc)
+            return JsonResponse({"locations":loc}, status=201)            
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    else:
+        return JsonResponse({"error": "Invalid HTTP method."}, status=405)            
+
+
+@csrf_exempt
 def makeShift_view(request):
     if request.method == 'POST':
         try:
