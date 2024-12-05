@@ -296,39 +296,19 @@ def getShifts_view(request):
             # print(request.GET)
             start_date_str = int(request.GET.get('start_date'))/1000  # e.g., "2024-11-01"
             end_date_str = int(request.GET.get('end_date'))/1000      # e.g., "2024-11-30"
-            username = request.GET.get('userName')
-            # print("Idhar")            
+            username = request.GET.get('userName')            
 
             print(request.GET)
             
             # Validate if both start_date and end_date are provided
             if not start_date_str or not end_date_str:
                 return JsonResponse({"error": "Both start_date and end_date are required."}, status=400)
-            # print("Udhar")
+            
             # Convert the date strings into date objects
             # print(start_date_str, type(start_date_str))
             start_date = datetime.datetime.fromtimestamp(start_date_str).date()
             end_date = datetime.datetime.fromtimestamp(end_date_str).date()
-            # print("Kidhar")
-            # print(start_date, end_date)
-
-            # # Filter shifts within the date range and order them by date in ascending order
-            # shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
-
-            # # Prepare the data for response
-            # shifts_data = [
-            #     {
-            #         "shift_id": shift.shift_id,
-            #         "employee": shift.user.username if shift.employee else None,
-            #         "manager": shift.user.username if shift.manager else None,
-            #         "date": shift.date.strftime("%Y-%m-%d"),
-            #         "location": shift.location,
-            #         "start_time": shift.start_time.strftime("%H:%M:%S"),
-            #         "end_time": shift.end_time.strftime("%H:%M:%S"),
-            #     }
-            #     for shift in shifts
-            # ]
-
+           
             # Initialize an empty list to hold the data
             shifts_data = []
             
@@ -346,13 +326,7 @@ def getShifts_view(request):
                 # Find UniqueShift instances where the employee does not have an entry in the Shift table
                 shifts = UniqueShift.objects.exclude(pk__in=existing_shift_ids).exclude(employee__isnull=False).filter(date=current_date).order_by('date')
 
-
                 
-
-                # print(user.username)
-                # print(shifts)
-
-                # Prepare the shift data for the current date
                 date_shifts = {
                     "date": current_date.strftime("%m/%d/%Y"),
                     "data": [
@@ -367,40 +341,14 @@ def getShifts_view(request):
                     ]
                 }
 
-                # Append the data for the current date to the list
+                
                 shifts_data.append(date_shifts)
 
-                # Move to the next day
+               
                 current_date += timedelta(days=1)
 
             # Return the shifts data as a JSON response
             return JsonResponse({"data": shifts_data}, status=201)
-
-
-            # # Filter shifts within the date range and order them by date in ascending order
-            # shifts = UniqueShift.objects.filter(date__gte=start_date, date__lte=end_date).order_by('date')
-
-            # # Create a dictionary with all dates in the range as keys
-            # shifts_data = { 
-            #     (start_date + datetime.timedelta(days=i)).strftime("%Y-%m-%d"): []
-            #     for i in range((end_date - start_date).days + 1)
-            # }
-
-            # # Populate the dictionary with shift data
-            # for shift in shifts:
-            #     date_key = shift.date.strftime("%Y-%m-%d")
-            #     shifts_data[date_key].append({
-            #         "shift_id": shift.shift_id,
-            #         "employee": shift.employee.username if shift.employee else None,
-            #         "manager": shift.manager.username if shift.manager else None,
-            #         "date": shift.date.strftime("%Y-%m-%d"),
-            #         "location": shift.location,
-            #         "start_time": shift.start_time.strftime("%H:%M:%S"),
-            #         "end_time": shift.end_time.strftime("%H:%M:%S"),
-            #     })
-
-            # # Return the shifts data as JSON response
-            # return JsonResponse({"shifts": shifts_data}, status=200)
         
         except ValueError as e:
             print("The exception:", e)
@@ -754,6 +702,8 @@ def deleteShift_view(request):
                 print(f"Shift with ID {shift_id} successfully deleted.")
             except UniqueShift.DoesNotExist:
                 print(f"Shift with ID {shift_id} does not exist.")
+
+            return JsonResponse({"message": f"Shift :{shift_id} deleted successfully."})
             
         except Exception as e:
             print("Exception:", e)
