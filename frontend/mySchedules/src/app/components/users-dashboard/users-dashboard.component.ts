@@ -119,7 +119,7 @@ export class UsersDashboardComponent {
             });
           } 
         });
-        this.viewShiftsAsPerLocations(shiftLocation);
+        this.viewShiftsAsPerLocations();
       },
       error => console.error(error)
     );
@@ -168,7 +168,7 @@ export class UsersDashboardComponent {
     });
   }
 
-  viewShiftsAsPerLocations(shift: any){
+  viewShiftsAsPerLocations(){
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
     const headers = { 'Content-Type': 'application/json' };
 
