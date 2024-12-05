@@ -85,6 +85,7 @@ export class SchedulesPageComponent implements OnInit{
     
     this.getShift();
     this.postedShift();
+    this.viewShiftsAsPerLocations();
     this.range.valueChanges.subscribe(() => {
       this.getShift();
       this.postedShift();
@@ -175,7 +176,7 @@ export class SchedulesPageComponent implements OnInit{
           // Check if there are any shifts for the current date
           if (entry.data.length > 0) {
             entry.data.forEach((shift: any) => {
-              this.viewShiftsAsPerLocations(shift.location);
+              this.viewShiftsAsPerLocations();
 
               shiftId = shift.shift_id;
               userName = shift.user;
@@ -252,7 +253,7 @@ export class SchedulesPageComponent implements OnInit{
     this.router.navigate(['/']);
   }
 
-  viewShiftsAsPerLocations(shift: any){
+  viewShiftsAsPerLocations(){
     const apiUrl = 'http://127.0.0.1:8000/users/getShifts_allUsers/';
     const headers = { 'Content-Type': 'application/json' };
 
@@ -266,8 +267,8 @@ export class SchedulesPageComponent implements OnInit{
 
     this.http.get(apiUrl, { params: this.params, headers }).subscribe(
       (response: any) => {
+        console.log("Response: ",response.data);
         this.shiftsAsPerLocation = response.data; // Assuming the backend returns a list of shifts
-        console.log(response.data)
       },
       error => console.error(error)
     );
