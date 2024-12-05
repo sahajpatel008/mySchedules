@@ -18,7 +18,7 @@ import random
 # Create your views here.
 @csrf_exempt
 def register(request):
-    print("Zinda hu mai")
+
     if request.method == 'POST':
         try:
             # Load data from request body
@@ -49,8 +49,8 @@ def register(request):
 
             # Send confirmation email
             send_mail(
-                'Welcome to Our Website!',
-                f'Hello {user.username}! Thanks for registering at our website.',
+                'Welcome to mySchedules!',
+                f'Hello {user.username}! Thanks for registering.',
                 settings.EMAIL_HOST_USER,  # From email (use your configured email)
                 [user.email],  # To email (user's email)
                 fail_silently=False,
@@ -66,29 +66,6 @@ def register(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid HTTP method.'}, status=405)
-    # if request.method == 'POST':
-    #     form = UserRegisterForm(request.POST)
-    #     if form.is_valid():
-    #         user = form.save(commit=False)
-    #         user.set_password(form.cleaned_data['password'])
-    #         user.save()
-
-    #         # Send a confirmation email
-    #         send_mail(
-    #             'Welcome to Our Website!',
-    #             f'Hello {user.username}! Thanks for registering at our website.',
-    #             settings.EMAIL_HOST_USER,  # From email (use your configured email)
-    #             [user.email],  # To email (user's email)
-    #             fail_silently=False,
-    #         )
-
-    #         # login(request, user)
-    #         messages.success(request, f'Account created for {user.username}!')
-    #         return redirect('login')
-    
-    # form = UserRegisterForm()
-
-    # return render(request, 'users/register.html', {'form': form })
 
 @csrf_exempt
 def login_view(request):
@@ -395,13 +372,13 @@ def pickupShift_view(request):
                 request_status= 'Request'
             )
 
-            # send_mail(
-            #     f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
-            #     f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
-            #     settings.EMAIL_HOST_USER,  # From email (use your configured email)
-            #     [employee_obj.email],  # To email (user's email)
-            #     fail_silently=False,
-            # )
+            send_mail(
+                f'Pickup request for {shift_obj.location} - {shift_obj.date.strftime("%m/%d/%Y")}',
+                f'Hello {employee_obj.username}! Pickup request generated for {shift_obj.location}.\nStart_Time:{shift_obj.start_time.strftime("")}',
+                settings.EMAIL_HOST_USER,  # From email (use your configured email)
+                [employee_obj.email],  # To email (user's email)
+                fail_silently=False,
+            )
             
             
             return JsonResponse({"message": "shift pickup request sent", "pickup_id": shift_obj.pk}, status=201)
