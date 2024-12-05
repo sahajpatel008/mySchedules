@@ -23,7 +23,7 @@
                 <mat-form-field>
                   <mat-label>location</mat-label>
                   <mat-select [(ngModel)]="selectedLocation" name="location">
-                    <mat-option *ngFor="let location of locations" [value]="location.loc">
+                    <mat-option *ngFor="let location of locations" [value]="location">
                       {{location}}
                     </mat-option>
                   </mat-select>
